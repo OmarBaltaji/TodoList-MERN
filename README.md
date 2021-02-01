@@ -1,15 +1,14 @@
 Pre-requisites:<br/>
     Make sure you have Node JS installed on your machine
 
-then run the following commands:
+Then run the following commands:
 
 npm: <br/>
-    git clone https://github.com/OmarBaltaji/TodoList-MERN.git
-    cd TodoList-MERN
-    npm install
-
-    cd backend
-    npm install
+    git clone https://github.com/OmarBaltaji/TodoList-MERN.git<br/>
+    cd TodoList-MERN<br/>
+    npm install<br/>
+    cd backend<br/>
+    npm install<br/>
 
 .env file:<br/>
     Copy .env.example to .env<br/>

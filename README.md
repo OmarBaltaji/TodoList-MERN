@@ -1,4 +1,4 @@
-Pre-requisites:
+Pre-requisites:<br/>
     Make sure you have Node JS installed on your machine
 
 then run the following commands:

@@ -3,7 +3,7 @@ Pre-requisites:
 
 then run the following commands:
 
-npm: 
+npm: <br/>
     git clone https://github.com/OmarBaltaji/TodoList-MERN.git
     cd TodoList-MERN
     npm install

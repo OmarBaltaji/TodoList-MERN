@@ -3,6 +3,6 @@ const { getAllLists, createList, getList, deleteList, updateList } = require('..
 
 router.route('/').get(getAllLists).post(createList);
 
-router.route('/:id').get(getList).delete(deleteList).put(updateList);
+router.route('/:id').get(getList).delete(deleteList).patch(updateList);
 
 module.exports = router;

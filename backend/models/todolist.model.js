@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const todoListSchema = new Schema({
       title: {
           type: String,
-          required: true,
+          required: [true, "Title is required"],
           trim: true,
           unique: true,
       },

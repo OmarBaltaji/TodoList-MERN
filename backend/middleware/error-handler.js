@@ -22,6 +22,8 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.message = `Duplicate value entered for ${Object.keys(err.keyValue)} field, please enter another value`;
     customError.statusCode = StatusCodes.BAD_REQUEST;
   }
+
+  return res.status(customError.statusCode).json({ message: customError.message });
 }
 
 module.exports = errorHandlerMiddleware;

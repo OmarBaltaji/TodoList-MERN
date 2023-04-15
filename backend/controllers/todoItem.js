@@ -1,38 +1,70 @@
 const todoItem = require('../models/todoitem.model');
 const {StatusCodes} = require('http-status-codes');
+const { BadRequestError, NotFoundError } = require('../errors');
 
 const getAllItems = async (req, res) => {
   const listId = req.body.listId;
+
+  if(!listId) {
+    throw new BadRequestError("Please provide the list id in order to retrieve the list's items");
+  }
+
   const items = await todoItem.find({"listId": listId});
-  return res.status(StatusCodes.OK).json(items);
+  res.status(StatusCodes.OK).json({ count: items.length, items});
 }
 
 const createItem = async (req, res) => {
   const {name, listId} = req.body;
+
+  if(!name) {
+    throw new BadRequestError("Please provide the name of the item");
+  }
+
+  if(!listId) {
+    throw new BadRequestError("Can't add an item without associating it to an existing list");
+  }
+
   const item = await todoItem.create({name, listId});
-  return  res.status(StatusCodes.CREATED).json('Item added!');
+  res.status(StatusCodes.CREATED).json(`Item "${item.name}" added successfully`);
 }
 
 const getItem = async (req, res) => {
-  const item = await todoItem.findById(req.params.id)
-  return res.status(StatusCodes.OK).json(item);
+  const { params: {id: itemId} } = req;
+  const item = await todoItem.findById(itemId);
+
+  if(!item) { 
+    throw new NotFoundError(`Item with id ${itemId} does not exist`);
+  }
+
+  res.status(StatusCodes.OK).json({ item });
 }
 
 const deleteItem = async (req, res) => {
-  const item = await todoItem.findByIdAndDelete(req.params.id);
-  return res.status(StatusCodes.OK).json('Item deleted.');
+  const {params: {id: itemId}} = req;
+
+  const item = await todoItem.findByIdAndDelete(itemId);
+
+  if(!item ){
+    throw new NotFoundError(`Item with id ${itemId} does not exist`);
+  }
+
+  return res.status(StatusCodes.OK).json(`Item: "${item.name}" deleted successfully`);
 }
 
 const updateItem = async (req, res) => {
-  const {name, done} = req.body;
+  const {params: {id: itemId}, body: {name, done}} = req;
+
   const item = await todoItem.findByIdAndUpdate(
-    {_id: req.params.id},
+    {_id: itemId},
     { name, done },
     {runValidators: true, new: true}  
   );
-  console.log(done);
 
-  return res.status(StatusCodes.OK).json(item);
+  if(!item) {
+    throw new NotFoundError(`Item with id ${itemId} does not exist`);
+  }
+
+  return res.status(StatusCodes.OK).json(`Item "${item.name}" updated successfully`);
 }
 
 module.exports = {

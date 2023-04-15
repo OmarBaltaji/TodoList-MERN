@@ -53,11 +53,19 @@ const deleteItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
   const {params: {id: itemId}, body: {name, done}} = req;
+  const updatedBody = {}
+
+  if(name)
+    updatedBody.name = name;
+  
+  // since it is a boolean, it's better to check whether it is undefined or not to make sure if it is included the in the request
+  if(done !== undefined) 
+    updatedBody.done = done;
 
   const item = await todoItem.findByIdAndUpdate(
-    {_id: itemId},
-    { name, done },
-    {runValidators: true, new: true}  
+    { _id: itemId },
+    { ...updatedBody },
+    { new: true }  
   );
 
   if(!item) {

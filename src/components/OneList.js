@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
+import api from '../api';
 
 export default function OneList() {
     const [listTitle, setListTitle] = useState();
@@ -16,11 +17,13 @@ export default function OneList() {
         setItemDeleted(false);
     }, [itemAdded, itemDeleted]);
 
-    function getChosenList() {
-        axios.get(`http://localhost:5000/api/v1/lists/${params.id}`)
-        .then(res => {
-            setListTitle(res.data);
-        })
+    async function getChosenList() {
+        try {
+            const {data: {list}} = await api.getList(params.id)
+            setListTitle(list.title);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function getListItems() {

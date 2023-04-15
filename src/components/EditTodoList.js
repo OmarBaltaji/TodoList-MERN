@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 export default function EditItem() {
     const [newListTitle, setNewListTitle] = useState('');
@@ -12,26 +12,26 @@ export default function EditItem() {
         getListInfo();
     }, []);
 
-    function getListInfo() {
-        axios.get(`http://localhost:5000/api/v1/lists/${params.id}`)
-        .then(res => {
-            console.log(res.data);
-            setListInfo(res.data);
-        })
+    async function getListInfo() {
+        try {
+            const {data: { list }} = await api.getList(params.id)
+            setListInfo(list);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function handleOnSubmit(e) {
+    async function handleOnSubmit(e) {
         e.preventDefault();
 
-        const info = {
-            title: newListTitle,
-        }
+        const formData = { title: newListTitle }
 
-        axios.put(`http://localhost:5000/api/v1/lists/${params.id}`, info)
-        .then(res => {
+        try {
+            const {data: successMessage} = await api.updateList(params.id, formData);
             history.goBack();
-        })
-        .catch(err => console.log(err))
+        } catch(err) {
+            console.error(err);
+        } 
     }
 
     return (

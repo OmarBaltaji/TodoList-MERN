@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 export default function Home() {
     const [title, setTitle] = useState('');
@@ -16,37 +16,35 @@ export default function Home() {
         setListAdded(false)
     }, [listDeleted, listAdded]);
 
-    function handleOnSubmit(e) {
+    async function handleOnSubmit(e) {
         e.preventDefault();
+        const formData = { title };
 
-        const info = {
-            title: title,
-        };
-
-        axios.post('http://localhost:5000/api/v1/lists/', info)
-        .then(res => {
-            console.log(res.data);
+        try {
+            const {data: successMessage} = await api.createList(formData);
             setListAdded(true);
-        })
-        .catch(err => console.log(err));
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function getAllLists() {
-        axios.get('http://localhost:5000/api/v1/lists')
-        .then(res => {
-            console.log(res.data)
-            setLists(res.data);
-        })
-        .catch(err => console.log(err));
+    async function getAllLists() {
+        try {
+            const {data: {lists}} = await api.getAllLists();
+            setLists(lists);
+        } catch (err) {
+            console.err(err);
+        }
     }
 
-    function deleteList(id) {
-        axios.delete(`http://localhost:5000/api/v1/lists/${id}`)
-        .then(res => {
-            if(res) {
-                setListDeleted(true);
-            }
-        })
+    async function deleteList(id) {
+        try {
+            const {data: successMessage} = await api.deleteList(id);
+            console.log(successMessage);
+            setListDeleted(true);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function handleRedirectToEdit(id) {

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
-import axios from 'axios';
 import api from '../api';
 
 export default function OneList() {
@@ -26,41 +25,33 @@ export default function OneList() {
         }
     }
 
-    function getListItems() {
-        axios.post(`http://localhost:5000/api/v1/items/`, {listId: params.id})
-        .then(res => {
-            setItems(res.data);
-        })
-        .catch(err => console.log(err))
+    async function getListItems() {
+        try {
+            const {data: {items}} = await api.getListItems(params.id);
+            setItems(items);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function handleStatusChange(e, id) {
-        e.preventDefault();
-        let status;
-        if(e.target.checked) {
-            status = {
-                "done": true,
-            }
-        }
-        else {
-            status = {
-                "done": false,
-            }
-        }
+    async function handleStatusChange(e, id) {
+        const formData = { done: e.target.checked }
 
-        axios.put(`http://localhost:5000/api/v1/items/${id}`, status)
-        .then(res => { 
+        try {
+            const {data: successMessage} = await api.updateItem(id, formData);
             window.location.reload();
-        });
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function deleteItem(id) {
-        axios.delete(`http://localhost:5000/api/v1/items/${id}`)
-        .then(res => {
-            if(res) {
-                setItemDeleted(true);
-            }
-        })
+    async function deleteItem(id) {
+        try {
+            const {data: successMessage} = await api.deleteItem(id);
+            setItemDeleted(true);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function displayListItems() {
@@ -83,23 +74,23 @@ export default function OneList() {
         )
     }
 
-    function handleOnSubmit(e) {
+    async function handleOnSubmit(e) {
         e.preventDefault();
 
-        const info = {
+        const formData = {
             "name":  newItemName,
             "listId": params.id,
         }
-        
-        axios.post('http://localhost:5000/api/v1/items/add', info)
-        .then(res => {
-            console.log(res);
-            if(res) {
-                setItemAdded(true);
-                document.getElementById('item_name').value = '';
-                setItemAdded(false);
-            }
-        })
+
+        try {
+            const {data: successMessage} = await api.createItem(formData)
+            console.log(successMessage);
+            setItemAdded(true);
+            document.getElementById('item_name').value = '';
+            setItemAdded(false);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     return(

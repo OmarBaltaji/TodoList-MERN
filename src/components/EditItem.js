@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 export default function EditItem() {
     const [newItemName, setNewItemName] = useState('');
@@ -12,26 +12,26 @@ export default function EditItem() {
         getItemInfo();
     }, []);
 
-    function getItemInfo() {
-        axios.get(`http://localhost:5000/api/v1/items/${params.id}`)
-        .then(res => {
-            console.log(res.data);
-            setItemInfo(res.data);
-        })
+    async function getItemInfo() {
+        try {
+            const {data: {item}} = await api.getItem(params.id)
+            setItemInfo(item);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    function handleOnSubmit(e) {
+    async function handleOnSubmit(e) {
         e.preventDefault();
 
-        const info = {
-            name: newItemName,
-        }
+        const formData = { name: newItemName }
 
-        axios.put(`http://localhost:5000/api/v1/items/${params.id}`, info)
-        .then(res => {
+        try {
+            api.updateItem(params.id, formData)
             history.goBack();
-        })
-        .catch(err => console.log(err))
+        } catch (err) {
+            console.log(err);
+        } 
     }
 
     return (

@@ -30,7 +30,7 @@ export default function EditItem() {
             api.updateItem(params.id, formData)
             history.goBack();
         } catch (err) {
-            console.log(err);
+            console.error(err);
         } 
     }
 

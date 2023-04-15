@@ -40,7 +40,6 @@ export default function Home() {
     async function deleteList(id) {
         try {
             const {data: successMessage} = await api.deleteList(id);
-            console.log(successMessage);
             setListDeleted(true);
         } catch (err) {
             console.error(err);

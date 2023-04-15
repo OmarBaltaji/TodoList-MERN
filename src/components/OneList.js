@@ -84,7 +84,6 @@ export default function OneList() {
 
         try {
             const {data: successMessage} = await api.createItem(formData)
-            console.log(successMessage);
             setItemAdded(true);
             document.getElementById('item_name').value = '';
             setItemAdded(false);

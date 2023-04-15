@@ -17,15 +17,14 @@ export default function OneList() {
     }, [itemAdded, itemDeleted]);
 
     function getChosenList() {
-        axios.get(`http://localhost:5000/lists/${params.id}`)
+        axios.get(`http://localhost:5000/api/v1/lists/${params.id}`)
         .then(res => {
             setListTitle(res.data);
         })
     }
 
     function getListItems() {
-        let listId = {"listId": params.id};
-        axios.post(`http://localhost:5000/items/`, listId)
+        axios.post(`http://localhost:5000/api/v1/items/`, {listId: params.id})
         .then(res => {
             setItems(res.data);
         })
@@ -46,14 +45,14 @@ export default function OneList() {
             }
         }
 
-        axios.put(`http://localhost:5000/items/update/${id}`, status)
+        axios.put(`http://localhost:5000/api/v1/items/${id}`, status)
         .then(res => { 
             window.location.reload();
         });
     }
 
     function deleteItem(id) {
-        axios.delete(`http://localhost:5000/items/${id}`)
+        axios.delete(`http://localhost:5000/api/v1/items/${id}`)
         .then(res => {
             if(res) {
                 setItemDeleted(true);
@@ -89,7 +88,7 @@ export default function OneList() {
             "listId": params.id,
         }
         
-        axios.post('http://localhost:5000/items/add', info)
+        axios.post('http://localhost:5000/api/v1/items/add', info)
         .then(res => {
             console.log(res);
             if(res) {

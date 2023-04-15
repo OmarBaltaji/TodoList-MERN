@@ -23,7 +23,7 @@ export default function Home() {
             title: title,
         };
 
-        axios.post('http://localhost:5000/lists/add', info)
+        axios.post('http://localhost:5000/api/v1/lists/', info)
         .then(res => {
             console.log(res.data);
             setListAdded(true);
@@ -32,7 +32,7 @@ export default function Home() {
     }
 
     function getAllLists() {
-        axios.get('http://localhost:5000/lists')
+        axios.get('http://localhost:5000/api/v1/lists')
         .then(res => {
             console.log(res.data)
             setLists(res.data);
@@ -41,7 +41,7 @@ export default function Home() {
     }
 
     function deleteList(id) {
-        axios.delete(`http://localhost:5000/lists/${id}`)
+        axios.delete(`http://localhost:5000/api/v1/lists/${id}`)
         .then(res => {
             if(res) {
                 setListDeleted(true);

@@ -13,7 +13,7 @@ export default function EditItem() {
     }, []);
 
     function getItemInfo() {
-        axios.get(`http://localhost:5000/items/${params.id}`)
+        axios.get(`http://localhost:5000/api/v1/items/${params.id}`)
         .then(res => {
             console.log(res.data);
             setItemInfo(res.data);
@@ -27,7 +27,7 @@ export default function EditItem() {
             name: newItemName,
         }
 
-        axios.put(`http://localhost:5000/items/update/${params.id}`, info)
+        axios.put(`http://localhost:5000/api/v1/items/${params.id}`, info)
         .then(res => {
             history.goBack();
         })

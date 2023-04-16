@@ -2,12 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import api from '../../api';
 import Button from '../common/Button';
-import ListItem from '../ListItem';
+import Item from '../items/Item';
 import { useHistory } from 'react-router-dom';
 import Form from '../common/Form';
 
-export default function SingleListView() {
-    const [list, setList] = useState({});
+export default function ListDetails() {
+    const [list, setList] = useState();
     const [newItemName, setNewItemName] = useState('');
     const [items, setItems] = useState([]);
     const [areItemsChanged, setAreItemsChanged] = useState(false);
@@ -68,7 +68,7 @@ export default function SingleListView() {
         return(
             <ul>
                 {items.map((item,index) => 
-                    <ListItem 
+                    <Item 
                         key={`item${index}`} 
                         item={item} 
                         onChangeHandler={(e) => handleStatusChange(e, item._id)}    
@@ -99,7 +99,7 @@ export default function SingleListView() {
     return(
         <div className="container mt-4">
             <Button className="btn-secondary mb-3" onClickHandler={() => history.push('/')} innerText="Go Back" />
-            <h2 className="mb-5">{list ? `You are viewing now ${list.title}` : 'loading...'}</h2>
+            {list && <h2 className="mb-5">You are viewing now {list.title}</h2>}
             <Form value={newItemName} handleOnChange={(e) => setNewItemName(e.target.value)} handleOnSubmit={(e) => handleOnSubmit(e)} inputPlaceholder="Enter item name i.e., Shopping, chores..." />
             <div className="mt-4">
                 <h4>List's Items</h4>

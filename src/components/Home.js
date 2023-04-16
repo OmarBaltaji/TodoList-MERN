@@ -59,8 +59,7 @@ export default function Home() {
                            <div className="row mb-4" key={index}>
                                 <li className="mt-1"><Link to={`/list/${list._id}`}>{list.title}</Link></li>&emsp;
                                 <Button className="btn-primary" onClickHandler={() => handleRedirectToEdit(list._id)} innerText="Edit" />
-                                | &ensp;
-                                <Button className="btn-secondary" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
+                                <Button className="btn-danger" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
                             </div>
                        );
                     })

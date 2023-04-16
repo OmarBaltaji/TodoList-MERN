@@ -2,7 +2,7 @@ import React from 'react';
 import Button from './Button';
 import '../../styles/css/form.css';
 
-export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false}) {
+export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
  
   return (
     <form className='pl-0 col-md-4 mb-4'>
@@ -13,7 +13,7 @@ export default function Form({handleOnSubmit, value, handleOnChange, isEdit = fa
             required
             value={value}
             onChange={handleOnChange}
-            placeholder="Please enter a title for your list"
+            placeholder={inputPlaceholder}
         />
         <Button 
             className="btn-outline-primary border-rounded-end"  

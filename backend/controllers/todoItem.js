@@ -25,7 +25,7 @@ const createItem = async (req, res) => {
   }
 
   const item = await todoItem.create({name, listId});
-  res.status(StatusCodes.CREATED).json(`Item "${item.name}" added successfully`);
+  res.status(StatusCodes.CREATED).json({ item });
 }
 
 const getItem = async (req, res) => {

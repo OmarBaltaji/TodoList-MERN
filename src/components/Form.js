@@ -5,8 +5,8 @@ import '../styles/css/form.css';
 export default function Form({handleOnSubmit, value, handleOnChange}) {
  
   return (
-    <form>
-      <div className="input-group mb-3 col-md-4">
+    <form className='col-md-4 mb-4'>
+      <div className="input-group mb-3">
         <input 
             className="ml-5 px-2 form-control"
             aria-describedby="button-addon2"

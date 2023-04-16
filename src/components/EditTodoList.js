@@ -2,21 +2,22 @@ import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import api from '../api';
 import Button from './Button';
+import Form from './Form';
 
 export default function EditItem() {
     const [newListTitle, setNewListTitle] = useState('');
-    const [listInfo, setListInfo] = useState([]);
+    const [list, setList] = useState();
     const params = useParams();
     const history = useHistory();
 
     useEffect(() => {
-        getListInfo();
-    }, []);
+        getList();
+    }, [params.id]);
 
-    async function getListInfo() {
+    async function getList() {
         try {
             const {data: { list }} = await api.getList(params.id)
-            setListInfo(list);
+            setList(list);
         } catch (err) {
             console.error(err);
         }
@@ -24,7 +25,6 @@ export default function EditItem() {
 
     async function handleOnSubmit(e) {
         e.preventDefault();
-
         const formData = { title: newListTitle }
 
         try {
@@ -37,27 +37,13 @@ export default function EditItem() {
 
     return (
         <div className="container mt-4">
-         <Button className="btn-secondary mb-3" onClickHandler={() => history.push(`/`)} innerText="Go Back" />
-            <div className="input-group mb-3">
-                <label className="mt-1">Edit List:</label>
-                <input 
-                className="ml-4 px-2"
-                style={{ width:'250px' }}
-                id="item_name"
-                type="text"
-                aria-describedby="button-addon2"
-                required
-                defaultValue={listInfo.title}
-                onChange={(e) => setNewListTitle(e.target.value)}
-                placeholder="Insert title"
-                />
-                <Button 
-                    className="btn-outline-primary"  
-                    id="button-addon2"
-                    onClickHandler={(e) => handleOnSubmit(e)} 
-                  innerText='Edit'
-                />
-            </div>
+            <Button className="btn-secondary mb-3" onClickHandler={() => history.push(`/`)} innerText="Go Back" />
+            {list && <Form 
+                value={list.title}
+                handleOnChange={(e) => setNewListTitle(e.target.value)}
+                handleOnSubmit={(e) => handleOnSubmit(e)}
+                isEdit={true}
+            />}
         </div>
     );
 }

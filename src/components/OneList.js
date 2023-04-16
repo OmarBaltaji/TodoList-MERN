@@ -3,17 +3,20 @@ import {useParams} from 'react-router-dom';
 import api from '../api';
 import Button from './Button';
 import ListItem from './ListItem';
+import { useHistory } from 'react-router-dom';
 
 export default function OneList() {
-    const [list, setList] = useState();
+    const [list, setList] = useState({});
     const [newItemName, setNewItemName] = useState('');
     const [items, setItems] = useState([]);
+    const [areItemsChanged, setAreItemsChanged] = useState(false);
     const params = useParams();
+    const history = useHistory();
 
     useEffect(() => {
         getChosenList();
         getListItems();
-    }, [items]);
+    }, [params.id, areItemsChanged]);
 
     async function getChosenList() {
         try {
@@ -37,8 +40,15 @@ export default function OneList() {
         const formData = { done: e.target.checked }
 
         try {
-            const {data: successMessage} = await api.updateItem(id, formData);
-            window.location.reload();
+            const {data: {item: updatedItem}} = await api.updateItem(id, formData);
+            setItems(oldItems =>
+                oldItems.map(item => {
+                    if(item._id === id) {
+                        return { ...item, done: formData.done };
+                    }
+                    return item;
+                })
+            );
         } catch (err) {
             console.error(err);
         }
@@ -47,6 +57,7 @@ export default function OneList() {
     async function deleteItem(id) {
         try {
             const {data: successMessage} = await api.deleteItem(id);
+            setAreItemsChanged(oldIsItemModified => !oldIsItemModified);
         } catch (err) {
             console.error(err);
         }
@@ -78,6 +89,7 @@ export default function OneList() {
         try {
             const {data: successMessage} = await api.createItem(formData);
             setNewItemName('');
+            setAreItemsChanged(oldIsItemModified => !oldIsItemModified);
         } catch (err) {
             console.error(err);
         }
@@ -85,7 +97,7 @@ export default function OneList() {
 
     return(
         <div className="container mt-4">
-            <a href="/" style={{ maginBottom:'30px' }}>Go Back</a>
+            <Button className="btn-secondary mb-3" onClickHandler={() => history.push('/')} innerText="Go Back" />
             <h2 className="mb-5">{list ? `You are viewing now ${list.title}` : 'loading...'}</h2>
             <div className="input-group mb-3">
                 <label className="mt-1">Add a new item:</label>

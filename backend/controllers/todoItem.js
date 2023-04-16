@@ -64,8 +64,8 @@ const updateItem = async (req, res) => {
 
   const item = await todoItem.findByIdAndUpdate(
     { _id: itemId },
-    { ...updatedBody },
-    { new: true }  
+    { $set: { ...updatedBody } },
+    { runValidators: true, new: true }  
   );
 
   if(!item) {

@@ -3,7 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import Button from './common/Button';
 import Form from './common/Form';
-import List from './list/List';
+import List from './lists/List';
 
 export default function Home() {
     const [title, setTitle] = useState('');

@@ -57,7 +57,7 @@ export default function OneList() {
     async function deleteItem(id) {
         try {
             const {data: successMessage} = await api.deleteItem(id);
-            setAreItemsChanged(oldIsItemModified => !oldIsItemModified);
+            setAreItemsChanged(oldAreItemsChanged => !oldAreItemsChanged);
         } catch (err) {
             console.error(err);
         }
@@ -89,7 +89,7 @@ export default function OneList() {
         try {
             const {data: successMessage} = await api.createItem(formData);
             setNewItemName('');
-            setAreItemsChanged(oldIsItemModified => !oldIsItemModified);
+            setAreItemsChanged(oldAreItemsChanged => !oldAreItemsChanged);
         } catch (err) {
             console.error(err);
         }

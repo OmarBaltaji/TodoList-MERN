@@ -100,7 +100,12 @@ export default function ListDetails() {
         <div className="container mt-4">
             <Button className="btn-secondary mb-3" onClickHandler={() => history.push('/')} innerText="Go Back" />
             {list && <h2 className="mb-5">You are viewing now {list.title}</h2>}
-            <Form value={newItemName} handleOnChange={(e) => setNewItemName(e.target.value)} handleOnSubmit={(e) => handleOnSubmit(e)} inputPlaceholder="Enter item name i.e., Shopping, chores..." />
+            <Form 
+                value={newItemName} 
+                handleOnChange={(e) => setNewItemName(e.target.value)} 
+                handleOnSubmit={(e) => handleOnSubmit(e)} 
+                inputPlaceholder="Enter item name i.e., Shopping, chores..." 
+            />
             <div className="mt-4">
                 <h4>List's Items</h4>
                 {displayListItems()}

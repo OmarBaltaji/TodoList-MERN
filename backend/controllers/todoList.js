@@ -15,7 +15,7 @@ const createList = async (req, res) => {
   }
 
   const list = await todoList.create({ title });
-  return res.status(StatusCodes.CREATED).json(`${list.title} added successfully`);
+  return res.status(StatusCodes.CREATED).json({ list });
 }
  
 const getList = async (req, res) => {

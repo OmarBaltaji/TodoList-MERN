@@ -8,20 +8,19 @@ import List from './lists/List';
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
-    const [areListsChanged, setAreListsChanged] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
         getAllLists();
-    }, [areListsChanged]);
+    }, []);
 
     async function handleOnSubmit(e) {
         e.preventDefault();
         const formData = { title };
 
         try {
-            const {data: successMessage} = await api.createList(formData);
-            setAreListsChanged(oldValue => !oldValue);
+            const {data: {list: newList}} = await api.createList(formData);
+            setLists(oldLists => [...oldLists, newList]);
             setTitle('');
         } catch (err) {
             console.error(err);
@@ -40,7 +39,7 @@ export default function Home() {
     async function deleteList(id) {
         try {
             const {data: successMessage} = await api.deleteList(id);
-            setAreListsChanged(oldValue => !oldValue);
+            setLists(oldLists => oldLists.filter(list => list._id !== id));
         } catch (err) {
             console.error(err);
         }

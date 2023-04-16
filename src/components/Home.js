@@ -48,16 +48,14 @@ export default function Home() {
     function displayAllLists() {
         return(
             <ul>
-            {lists.map((list, index) => {
-                       return( 
-                           <div className="row mb-4" key={index}>
-                                <li className="mt-1"><Link to={`/list/${list._id}`}>{list.title}</Link></li>&emsp;
-                                <Button className="btn-primary" onClickHandler={() => history.push(`/editlist/${list._id}`)} innerText="Edit" />
-                                <Button className="btn-danger" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
-                            </div>
-                       );
-                    })
-            }
+                {lists.map((list, index) => (
+                    <div className="row mb-4" key={index}>
+                        <li className="mt-1 mr-4"><Link to={`/list/${list._id}`}>{list.title}</Link></li>
+                        <Button className="btn-primary" onClickHandler={() => history.push(`/editlist/${list._id}`)} innerText="Edit" />
+                        <Button className="btn-danger" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
+                    </div>
+                    )
+                )}
             </ul>
         );
      

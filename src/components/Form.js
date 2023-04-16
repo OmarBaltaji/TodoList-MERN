@@ -2,13 +2,13 @@ import React from 'react';
 import Button from './Button';
 import '../styles/css/form.css';
 
-export default function Form({handleOnSubmit, value, handleOnChange}) {
+export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false}) {
  
   return (
-    <form className='col-md-4 mb-4'>
+    <form className='pl-0 col-md-4 mb-4'>
       <div className="input-group mb-3">
         <input 
-            className="ml-5 px-2 form-control"
+            className="form-control"
             aria-describedby="button-addon2"
             required
             value={value}
@@ -18,7 +18,7 @@ export default function Form({handleOnSubmit, value, handleOnChange}) {
         <Button 
             className="btn-outline-primary border-rounded-end"  
             onClickHandler={handleOnSubmit}
-            innerText="Add"
+            innerText={isEdit ? "Edit" : "Add"}
             id="button-addon2"
         />
       </div>

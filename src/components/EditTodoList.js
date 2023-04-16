@@ -37,7 +37,7 @@ export default function EditItem() {
 
     return (
         <div className="container mt-4">
-         <a href={`/`} style={{ maginBottom:'30px' }}>Go Back</a>
+         <Button className="btn-secondary mb-3" onClickHandler={() => history.push(`/`)} innerText="Go Back" />
             <div className="input-group mb-3">
                 <label className="mt-1">Edit List:</label>
                 <input 

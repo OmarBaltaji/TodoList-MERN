@@ -5,7 +5,6 @@ import Button from '../common/Button';
 import Form from '../common/Form';
 
 export default function EditList() {
-    // const [newListTitle, setNewListTitle] = useState('');
     const [list, setList] = useState();
     const params = useParams();
     const history = useHistory();

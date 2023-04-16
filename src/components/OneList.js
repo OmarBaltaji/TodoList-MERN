@@ -2,25 +2,23 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import api from '../api';
 import Button from './Button';
+import ListItem from './ListItem';
 
 export default function OneList() {
-    const [listTitle, setListTitle] = useState();
+    const [list, setList] = useState();
     const [newItemName, setNewItemName] = useState('');
     const [items, setItems] = useState([]);
-    const [itemAdded, setItemAdded] = useState(false);
-    const [itemDeleted, setItemDeleted] = useState(false);
     const params = useParams();
 
     useEffect(() => {
         getChosenList();
         getListItems();
-        setItemDeleted(false);
-    }, [itemAdded, itemDeleted]);
+    }, [items]);
 
     async function getChosenList() {
         try {
-            const {data: {list}} = await api.getList(params.id)
-            setListTitle(list.title);
+            const {data: {list: fetchedList}} = await api.getList(params.id);
+            setList(fetchedList);
         } catch (err) {
             console.error(err);
         }
@@ -28,8 +26,8 @@ export default function OneList() {
 
     async function getListItems() {
         try {
-            const {data: {items}} = await api.getListItems(params.id);
-            setItems(items);
+            const {data: {items: fetchedItems}} = await api.getListItems(params.id);
+            setItems(fetchedItems);
         } catch (err) {
             console.error(err);
         }
@@ -49,7 +47,6 @@ export default function OneList() {
     async function deleteItem(id) {
         try {
             const {data: successMessage} = await api.deleteItem(id);
-            setItemDeleted(true);
         } catch (err) {
             console.error(err);
         }
@@ -58,19 +55,14 @@ export default function OneList() {
     function displayListItems() {
         return(
             <ul>
-                {items.map((item,index) => {
-                    return(
-                        <div key={`item${index}`} className="row">
-                            <li>{item.name}</li> &ensp;
-                            <input className="mt-1" type="checkbox" onChange={(e) => handleStatusChange(e, item._id)}
-                            checked={item.done}  
-                            /> &ensp;
-                            <a href={`/edititem/${item._id}`}>Edit</a> &ensp;
-                            | &ensp;
-                            <a href='#' onClick={() => deleteItem(item._id)}>Delete</a>
-                        </div>
-                    );
-                })}
+                {items.map((item,index) => 
+                    <ListItem 
+                        key={`item${index}`} 
+                        item={item} 
+                        onChangeHandler={(e) => handleStatusChange(e, item._id)}    
+                        onDeleteHandler={() => deleteItem(item._id)}
+                    />
+                )}
             </ul>
         )
     }
@@ -84,10 +76,8 @@ export default function OneList() {
         }
 
         try {
-            const {data: successMessage} = await api.createItem(formData)
-            setItemAdded(true);
-            document.getElementById('item_name').value = '';
-            setItemAdded(false);
+            const {data: successMessage} = await api.createItem(formData);
+            setNewItemName('');
         } catch (err) {
             console.error(err);
         }
@@ -96,16 +86,16 @@ export default function OneList() {
     return(
         <div className="container mt-4">
             <a href="/" style={{ maginBottom:'30px' }}>Go Back</a>
-            <h2 className="mb-5">{listTitle ? `You are viewing now ${listTitle.title}` : 'loading...'}</h2>
+            <h2 className="mb-5">{list ? `You are viewing now ${list.title}` : 'loading...'}</h2>
             <div className="input-group mb-3">
                 <label className="mt-1">Add a new item:</label>
                 <input 
                 className="ml-4 px-2"
                 style={{ width:'250px' }}
-                id="item_name"
                 type="text"
                 aria-describedby="button-addon2"
                 required
+                value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
                 placeholder="Shopping, chores, basketball..."
                 />

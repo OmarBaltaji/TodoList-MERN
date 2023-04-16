@@ -5,14 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './components/Home';
 import EditList from './components/list/EditList';
 import EditItem from './components/EditItem';
-import OneList from './components/OneList';
+import SingleListView from './components/list/SingleListView';
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Route exact path="/" component={Home} />
-        <Route exact path="/list/:id" component={OneList} />
+        <Route exact path="/list/:id" component={SingleListView} />
         <Route exact path="/editlist/:id" component={EditList} />
         <Route exact path="/edititem/:id" component={EditItem} />
       </Router>

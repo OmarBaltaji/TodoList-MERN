@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
-import api from '../api';
-import Button from './common/Button';
-import ListItem from './ListItem';
+import api from '../../api';
+import Button from '../common/Button';
+import ListItem from '../ListItem';
 import { useHistory } from 'react-router-dom';
+import Form from '../common/Form';
 
-export default function OneList() {
+export default function SingleListView() {
     const [list, setList] = useState({});
     const [newItemName, setNewItemName] = useState('');
     const [items, setItems] = useState([]);
@@ -99,25 +100,7 @@ export default function OneList() {
         <div className="container mt-4">
             <Button className="btn-secondary mb-3" onClickHandler={() => history.push('/')} innerText="Go Back" />
             <h2 className="mb-5">{list ? `You are viewing now ${list.title}` : 'loading...'}</h2>
-            <div className="input-group mb-3">
-                <label className="mt-1">Add a new item:</label>
-                <input 
-                className="ml-4 px-2"
-                style={{ width:'250px' }}
-                type="text"
-                aria-describedby="button-addon2"
-                required
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Shopping, chores, basketball..."
-                />
-                <Button 
-                    className="btn-outline-primary" 
-                    id="button-addon2"
-                    onClickHandler={(e) => handleOnSubmit(e)}
-                    innerText="Add"
-                />
-            </div>
+            <Form value={newItemName} handleOnChange={(e) => setNewItemName(e.target.value)} handleOnSubmit={(e) => handleOnSubmit(e)} inputPlaceholder="Enter item name i.e., Shopping, chores..." />
             <div className="mt-4">
                 <h4>List's Items</h4>
                 {displayListItems()}

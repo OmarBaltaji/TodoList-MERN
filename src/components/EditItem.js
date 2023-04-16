@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import api from '../api';
-import Button from './Button';
+import Button from './common/Button';
 
 export default function EditItem() {
     const [newItemName, setNewItemName] = useState('');

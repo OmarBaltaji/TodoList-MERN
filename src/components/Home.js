@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
-import Button from './Button';
-import Form from './Form';
+import Button from './common/Button';
+import Form from './common/Form';
 
 export default function Home() {
     const [title, setTitle] = useState('');

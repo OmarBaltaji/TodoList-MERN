@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from './Button';
-import '../styles/css/form.css';
+import '../../styles/css/form.css';
 
 export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false}) {
  

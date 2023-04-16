@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import api from '../api';
-import Button from './Button';
+import Button from './common/Button';
 import ListItem from './ListItem';
 import { useHistory } from 'react-router-dom';
 

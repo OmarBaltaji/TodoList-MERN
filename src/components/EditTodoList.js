@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import api from '../api';
-import Button from './Button';
-import Form from './Form';
+import Button from './common/Button';
+import Form from './common/Form';
 
 export default function EditItem() {
     const [newListTitle, setNewListTitle] = useState('');

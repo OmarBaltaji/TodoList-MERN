@@ -2,21 +2,21 @@ import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Button from '../common/Button';
+import Form from '../common/Form';
 
 export default function EditItem() {
-    const [newItemName, setNewItemName] = useState('');
-    const [itemInfo, setItemInfo] = useState([]);
+    const [item, setItem] = useState();
     const params = useParams();
     const history = useHistory();
 
     useEffect(() => {
-        getItemInfo();
+        getItem();
     }, []);
 
-    async function getItemInfo() {
+    async function getItem() {
         try {
-            const {data: {item}} = await api.getItem(params.id)
-            setItemInfo(item);
+            const {data: {item: fetchedItem}} = await api.getItem(params.id)
+            setItem(fetchedItem);
         } catch (err) {
             console.error(err);
         }
@@ -24,8 +24,7 @@ export default function EditItem() {
 
     async function handleOnSubmit(e) {
         e.preventDefault();
-
-        const formData = { name: newItemName }
+        const formData = { name: item.name }
 
         try {
             api.updateItem(params.id, formData)
@@ -37,29 +36,14 @@ export default function EditItem() {
 
     return (
         <div className="container mt-4">
-         <Button className="btn-secondary mb-3" onClickHandler={() => history.push(`/list/${itemInfo.listId}`)} innerText="Go Back" />
-            <div className="input-group mb-3">
-                <label className="mt-1">Edit item:</label>
-                <input 
-                className="ml-4 px-2"
-                style={{ width:'250px' }}
-                id="item_name"
-                type="text"
-                aria-describedby="button-addon2"
-                required
-                defaultValue={itemInfo.name}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Shopping, chores, basketball..."
-                />
-                <Button 
-                    className="btn-outline-primary" 
-                    id="button-addon2"
-                    onClickHandler={(e) => handleOnSubmit(e)}
-                    innerText="Edit"
-                />
-                    
-            </div>
-
+        <Button className="btn-secondary mb-3" onClickHandler={() => history.push(`/list/${item.listId}`)} innerText="Go Back" />
+        {item && <Form 
+            value={item.name}
+            handleOnChange={(e) => setItem(oldValue => ({ ...oldValue, name: e.target.value}))}
+            handleOnSubmit={(e) => handleOnSubmit(e)}
+            isEdit={true}
+            inputPlaceholder='Enter item name i.e., Shopping, chores...'
+        />}
         </div>
     );
 }

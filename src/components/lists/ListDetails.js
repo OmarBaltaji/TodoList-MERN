@@ -10,14 +10,13 @@ export default function ListDetails() {
     const [list, setList] = useState();
     const [newItemName, setNewItemName] = useState('');
     const [items, setItems] = useState([]);
-    const [areItemsChanged, setAreItemsChanged] = useState(false);
     const params = useParams();
     const history = useHistory();
 
     useEffect(() => {
         getChosenList();
         getListItems();
-    }, [params.id, areItemsChanged]);
+    }, [params.id]);
 
     async function getChosenList() {
         try {
@@ -58,7 +57,7 @@ export default function ListDetails() {
     async function deleteItem(id) {
         try {
             const {data: successMessage} = await api.deleteItem(id);
-            setAreItemsChanged(oldValue => !oldValue);
+            setItems(oldItems => oldItems.filter(item => item._id !== id));
         } catch (err) {
             console.error(err);
         }
@@ -88,9 +87,9 @@ export default function ListDetails() {
         }
 
         try {
-            const {data: successMessage} = await api.createItem(formData);
+            const {data: {item: newItem}} = await api.createItem(formData);
             setNewItemName('');
-            setAreItemsChanged(oldValue => !oldValue);
+            setItems(oldItems => [...oldItems, newItem]);
         } catch (err) {
             console.error(err);
         }

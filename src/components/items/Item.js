@@ -5,10 +5,6 @@ import { useHistory } from 'react-router-dom';
 export default function Item ({item, onChangeHandler, onDeleteHandler}) {
   const history = useHistory();
 
-  const goToEditPage = (itemId) => {
-    history.push(`/edititem/${itemId}`);
-  }
-
   return (
     <div  className="row align-items-center mb-3">
         <li className='mr-2'>{item.name}</li>
@@ -18,7 +14,7 @@ export default function Item ({item, onChangeHandler, onDeleteHandler}) {
             onChange={onChangeHandler}
             checked={item.done}  
         />
-        <Button className="btn-primary" onClickHandler={() => goToEditPage(item._id)} innerText="Edit" />
+        <Button className="btn-primary" onClickHandler={() => history.push(`/edititem/${item._id}`)} innerText="Edit" />
         <Button className="btn-danger" onClickHandler={onDeleteHandler} innerText="Delete" />
     </div>
   )

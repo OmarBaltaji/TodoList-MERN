@@ -3,6 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import Button from './common/Button';
 import Form from './common/Form';
+import List from './list/List';
 
 export default function Home() {
     const [title, setTitle] = useState('');
@@ -49,13 +50,13 @@ export default function Home() {
         return(
             <ul>
                 {lists.map((list, index) => (
-                    <div className="row mb-4" key={index}>
-                        <li className="mt-1 mr-4"><Link to={`/list/${list._id}`}>{list.title}</Link></li>
-                        <Button className="btn-primary" onClickHandler={() => history.push(`/editlist/${list._id}`)} innerText="Edit" />
-                        <Button className="btn-danger" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
-                    </div>
-                    )
-                )}
+                    <List 
+                        key={index} 
+                        list={list} 
+                        onEditHandler={() => history.push(`/editlist/${list._id}`)} 
+                        onDeleteHandler={() => deleteList(list._id)}     
+                    />
+                ))}
             </ul>
         );
      

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import api from '../api';
+import Button from './Button';
 
 export default function OneList() {
     const [listTitle, setListTitle] = useState();
@@ -62,10 +63,10 @@ export default function OneList() {
                         <div key={`item${index}`} className="row">
                             <li>{item.name}</li> &ensp;
                             <input className="mt-1" type="checkbox" onChange={(e) => handleStatusChange(e, item._id)}
-                            checked={item.done === true ? true : false}  
+                            checked={item.done}  
                             /> &ensp;
                             <a href={`/edititem/${item._id}`}>Edit</a> &ensp;
-                            <>|</> &ensp;
+                            | &ensp;
                             <a href='#' onClick={() => deleteItem(item._id)}>Delete</a>
                         </div>
                     );
@@ -108,12 +109,12 @@ export default function OneList() {
                 onChange={(e) => setNewItemName(e.target.value)}
                 placeholder="Shopping, chores, basketball..."
                 />
-                <button className="btn btn-outline-primary" 
-                type="button" 
-                id="button-addon2"
-                onClick={(e) => handleOnSubmit(e)}>
-                    Add
-                </button>
+                <Button 
+                    className="btn-outline-primary" 
+                    id="button-addon2"
+                    onClickHandler={(e) => handleOnSubmit(e)}
+                    innerText="Add"
+                />
             </div>
             <div className="mt-4">
                 <h4>List's Items</h4>

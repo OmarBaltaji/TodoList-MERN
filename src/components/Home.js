@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
+import Button from './Button';
 
 export default function Home() {
     const [title, setTitle] = useState('');
@@ -57,11 +58,9 @@ export default function Home() {
                        return( 
                            <div className="row mb-4" key={index}>
                                 <li className="mt-1"><Link to={`/list/${list._id}`}>{list.title}</Link></li>&emsp;
-                                <button className="btn btn-primary" onClick={() => handleRedirectToEdit(list._id)}>
-                                    Edit
-                                </button> &ensp;
-                                <>|</> &ensp;
-                                <button className="btn btn-secondary" onClick={() => deleteList(list._id)}>Delete</button>
+                                <Button className="btn-primary" onClickHandler={() => handleRedirectToEdit(list._id)} innerText="Edit" />
+                                | &ensp;
+                                <Button className="btn-secondary" onClickHandler={() => deleteList(list._id)} innerText="Delete" />
                             </div>
                        );
                     })
@@ -76,20 +75,20 @@ export default function Home() {
             <h1 className="mx-auto mb-5" style={{ width:'500px' }}>Welcome to your TodoList!</h1>
                 <div className="input-group mb-3">
                     <input 
-                    className="ml-5 px-2"
-                    style={{ width:'250px' }}
-                    type="text"
-                    aria-describedby="button-addon2"
-                    required
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Please enter a title for your list"
+                        className="ml-5 px-2"
+                        style={{ width:'250px' }}
+                        aria-describedby="button-addon2"
+                        required
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Please enter a title for your list"
                     />
-                    <button className="btn btn-outline-primary" 
-                    type="button" 
-                    id="button-addon2"
-                    onClick={(e) => handleOnSubmit(e)}>
-                        Add
-                    </button>
+                    <Button 
+                        className="btn-outline-primary"  
+                        onClickHandler={(e) => handleOnSubmit(e)}
+                        innerText="Add"
+                        id="button-addon2"
+                    />
                 </div>
                 <div className="ml-5">
                     {displayAllLists()}

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useHistory} from 'react-router-dom';
 import api from '../api';
+import Button from './Button';
 
 export default function EditItem() {
     const [newItemName, setNewItemName] = useState('');
@@ -50,12 +51,13 @@ export default function EditItem() {
                 onChange={(e) => setNewItemName(e.target.value)}
                 placeholder="Shopping, chores, basketball..."
                 />
-                <button className="btn btn-outline-primary" 
-                type="button" 
-                id="button-addon2"
-                onClick={(e) => handleOnSubmit(e)}>
-                    Edit
-                </button>
+                <Button 
+                    className="btn-outline-primary" 
+                    id="button-addon2"
+                    onClickHandler={(e) => handleOnSubmit(e)}
+                    innerText="Edit"
+                />
+                    
             </div>
 
         </div>

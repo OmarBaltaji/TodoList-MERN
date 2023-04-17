@@ -2,11 +2,11 @@ import React from 'react';
 import Button from './Button';
 import '../../styles/css/form.css';
 
-export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
+export default function Form({handleOnSubmit, value, handleOnChange, handleKeyDown, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
  
   return (
-    <form className='px-0 col-md-4 mb-4'>
-      <div className="input-group mb-3">
+    <form className='d-flex flex-column justify-content-between h-100'>
+      <div>
         <input 
             className="form-control"
             aria-describedby="button-addon2"
@@ -14,9 +14,12 @@ export default function Form({handleOnSubmit, value, handleOnChange, isEdit = fa
             value={value}
             onChange={handleOnChange}
             placeholder={inputPlaceholder}
+            onKeyDown={handleKeyDown}
         />
+      </div>
+      <div>
         <Button 
-            className="btn-outline-primary border-rounded-end"  
+            className="btn-outline-primary border-rounded-end w-100"  
             onClickHandler={handleOnSubmit}
             innerText={isEdit ? "Edit" : "Add"}
             id="button-addon2"

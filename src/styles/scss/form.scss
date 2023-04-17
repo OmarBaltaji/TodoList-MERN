@@ -3,6 +3,17 @@
   border-bottom-left-radius: 0 !important;
 }
 
-.card-body:hover {
-  opacity: .7;
+.card {
+  height: 8.75rem;
+  .card-body:hover {
+    opacity: .7;
+    cursor: pointer;
+  }
+
+  .card--header {
+    svg:hover {
+      opacity: .7;
+      cursor: pointer;
+    }
+  }
 }

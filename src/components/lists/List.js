@@ -4,10 +4,23 @@ import { Link } from 'react-router-dom';
 
 export default function List({list, onEditHandler, onDeleteHandler}) {
   return (
-    <div className="d-flex mb-4 align-items-center">
-      <li className='mr-4'><Link to={`/list/${list._id}`}>{list.title}</Link></li>
-      <Button className="btn-primary mr-3" onClickHandler={onEditHandler} innerText="Edit" />
-      <Button className="btn-danger" onClickHandler={onDeleteHandler} innerText="Delete" />
+    <div className='col-md-3 mb-3 mt-3'>
+        <div className='card'>
+        <Link to={`/list/${list._id}`} className="text-decoration-none">
+            <div className="card-body">
+              <div className='card-title text-center text-dark'>
+                {list.title}
+              </div>
+              <div className='card-text'>
+
+              </div>
+            </div>
+        </Link>
+          <div className='card-footer text-center'>
+            <Button className="btn-primary mr-3" onClickHandler={onEditHandler} innerText="Edit" />
+            <Button className="btn-danger" onClickHandler={onDeleteHandler} innerText="Delete" />
+          </div>
+        </div>
     </div>
   );
 }

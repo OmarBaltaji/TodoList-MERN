@@ -47,7 +47,7 @@ export default function Home() {
 
     function displayAllLists() {
         return(
-            <ul className='col-md-3'>
+            <div className='row col-md-12 px-5'>
                 {lists.map((list, index) => (
                     <List 
                         key={index} 
@@ -56,7 +56,7 @@ export default function Home() {
                         onDeleteHandler={() => deleteList(list._id)}     
                     />
                 ))}
-            </ul>
+            </div>
         );
      
     }

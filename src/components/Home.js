@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import { useHistory} from 'react-router-dom';
 import api from '../api';
-import Button from './common/Button';
-import Form from './common/Form';
 import List from './lists/List';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 export default function Home() {
     const [title, setTitle] = useState('');
@@ -20,7 +20,11 @@ export default function Home() {
 
         try {
             const {data: {list: newList}} = await api.createList(formData);
-            setLists(oldLists => [...oldLists, newList]);
+            setLists(oldLists => {
+                const lastListIndex = [oldLists.length - 1];
+                oldLists[lastListIndex] = newList;
+                return oldLists;
+            });
             setTitle('');
         } catch (err) {
             console.error(err);
@@ -45,6 +49,15 @@ export default function Home() {
         }
     }
 
+    function addNewList() {
+        setLists(oldLists => [...oldLists, {}]);
+    }
+
+    const handleKeyDown = (e) => {
+        if(e.key === 'Enter')
+            handleOnSubmit(e);
+    }
+
     function displayAllLists() {
         return(
             <div className='row col-md-12 px-5'>
@@ -53,9 +66,21 @@ export default function Home() {
                         key={index} 
                         list={list} 
                         onEditHandler={() => history.push(`/editlist/${list._id}`)} 
-                        onDeleteHandler={() => deleteList(list._id)}     
+                        onDeleteHandler={() => deleteList(list._id)}
+                        onChangeHandler={(e) => setTitle(e.target.value)}
+                        onSubmitHandler={(e) => handleOnSubmit(e)}
+                        titleValue={title} 
+                        handleKeyDown={handleKeyDown}
                     />
                 ))}
+                <div className='col-md-3 my-3'>
+                    <div className='card'>
+                        <div className='card-body d-flex align-items-center justify-content-center'>
+                            <strong className='mr-3'>Add a new list</strong>
+                            <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} onClick={addNewList} />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
      
@@ -64,7 +89,6 @@ export default function Home() {
     return (
         <div className="mt-4 d-flex align-items-center flex-column">
             <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
-            <Form handleOnChange={(e) => setTitle(e.target.value)} value={title} handleOnSubmit={(e) => handleOnSubmit(e)} />
             {displayAllLists()}
         </div>
     );

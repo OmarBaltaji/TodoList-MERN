@@ -5,7 +5,7 @@ import '../../styles/css/form.css';
 export default function Form({handleOnSubmit, value, handleOnChange, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
  
   return (
-    <form className='pl-0 col-md-4 mb-4'>
+    <form className='px-0 col-md-4 mb-4'>
       <div className="input-group mb-3">
         <input 
             className="form-control"

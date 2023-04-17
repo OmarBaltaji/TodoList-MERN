@@ -47,7 +47,7 @@ export default function Home() {
 
     function displayAllLists() {
         return(
-            <ul>
+            <ul className='col-md-3'>
                 {lists.map((list, index) => (
                     <List 
                         key={index} 
@@ -62,12 +62,10 @@ export default function Home() {
     }
 
     return (
-        <div className="mt-4 row align-items-center flex-column">
+        <div className="mt-4 d-flex align-items-center flex-column">
             <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
             <Form handleOnChange={(e) => setTitle(e.target.value)} value={title} handleOnSubmit={(e) => handleOnSubmit(e)} />
-            <div className="ml-5">
-                {displayAllLists()}
-            </div>
+            {displayAllLists()}
         </div>
     );
 }

@@ -5,7 +5,7 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
-export default function List({list, onEditHandler, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowEditForm, handleOnBlur}) {
+export default function List({list, onEditHandler, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, handleOnBlur}) {
   const displayNewEmptyList = () => (
     <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} handleOnBlur={handleOnBlur} />
   );
@@ -21,10 +21,10 @@ export default function List({list, onEditHandler, onDeleteHandler, onChangeHand
       </div>
       <div 
         className='card-title d-flex justify-content-center align-items-center text-dark h-100 mb-0' 
-        onClick={handleShowEditForm} 
+        onClick={handleShowTitleForm} 
         onKeyDown={handleKeyDown}
       >
-        {list.showEditForm ? displayEditTitleForm(list) : <span className='card-title-text cursor-pointer'>{list.title}</span>}
+        {list.showTitleForm ? displayEditTitleForm(list) : <span className='card-title-text cursor-pointer'>{list.title}</span>}
       </div>
       <div className='card-text'>
         {/* items */}

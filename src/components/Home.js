@@ -76,11 +76,11 @@ export default function Home() {
         if(e.key === 'Enter')
             handleOnSubmit(e, listId);
         else if (e.key === 'Escape') {
-            toggleEditForm(listId, false);
+            toggleTitleForm(listId, false);
         }
     }
 
-    const toggleEditForm = (listId, shouldShow) => {
+    const toggleTitleForm = (listId, shouldShow) => {
         if(!listId) {
             setLists(oldLists => oldLists.slice(0, -1));
             return;
@@ -88,7 +88,7 @@ export default function Home() {
 
         setLists(oldLists => oldLists.map(list => {
             if (list._id === listId)
-                list.showEditForm = shouldShow;
+                list.showTitleForm = shouldShow;
             return list;
         }));
     }
@@ -119,8 +119,8 @@ export default function Home() {
                         onSubmitHandler={(e) => handleOnSubmit(e, list._id)}
                         titleValue={title} 
                         handleKeyDown={(e) => handleKeyDown(e, list._id)}
-                        handleShowEditForm={() => toggleEditForm(list._id, true)}
-                        handleOnBlur={() => toggleEditForm(list._id, false)}
+                        handleShowTitleForm={() => toggleTitleForm(list._id, true)}
+                        handleOnBlur={() => toggleTitleForm(list._id, false)}
                     />
                 ))}
                 <div className='col-md-3 my-3'>

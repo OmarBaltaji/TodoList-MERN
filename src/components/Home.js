@@ -60,6 +60,11 @@ export default function Home() {
     }
 
     async function deleteList(id) {
+        if(!id) {
+            setLists(oldLists => oldLists.slice(0, -1));
+            return;
+        }
+        
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));

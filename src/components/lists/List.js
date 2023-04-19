@@ -4,7 +4,7 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
-export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm}) {
+export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, handleOnMouseLeave}) {
   const displayForm = (value, isEdit) => (
     <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} />
   )
@@ -34,7 +34,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
 
   return (
     <div className='col-md-3 my-3'>
-      <div className='card'>
+      <div className='card' onMouseLeave={handleOnMouseLeave}>
         <div className='card--header position-relative text-danger'>
           <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer' icon={faTrashCan} onClick={onDeleteHandler} />
         </div>

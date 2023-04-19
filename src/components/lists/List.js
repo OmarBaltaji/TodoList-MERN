@@ -5,26 +5,29 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
-export default function List({list, onEditHandler, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown}) {
+export default function List({list, onEditHandler, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowEditForm, handleOnBlur}) {
   const displayNewEmptyList = () => (
-    <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} />
+    <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} handleOnBlur={handleOnBlur} />
   );
+
+  const displayEditTitleForm = (list) => (
+    <Form handleOnChange={onChangeHandler} value={list.title} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={true} handleOnBlur={handleOnBlur} />
+  )
 
   const displayExistingList = () => (
     <>
-      <div className='card--header text-right pt-3 pr-3 text-danger'>
-        <FontAwesomeIcon icon={faTrashCan} onClick={onDeleteHandler} />
+      <div className='card--header position-relative text-danger'>
+        <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer' icon={faTrashCan} onClick={onDeleteHandler} />
       </div>
-      <div className="card-body" title='Edit'>
-        <div className='card-title text-center text-dark'>
-          {list.title}
-        </div>
-        <div className='card-text'>
-          {/* items */}
-        </div>
+      <div 
+        className='card-title d-flex justify-content-center align-items-center text-dark h-100 mb-0' 
+        onClick={handleShowEditForm} 
+        onKeyDown={handleKeyDown}
+      >
+        {list.showEditForm ? displayEditTitleForm(list) : <span className='card-title-text cursor-pointer'>{list.title}</span>}
       </div>
-      <div className='card-footer text-center'>
-        <Button className="btn-primary mr-3" onClickHandler={onEditHandler} innerText="Edit" />
+      <div className='card-text'>
+        {/* items */}
       </div>
     </>
   )

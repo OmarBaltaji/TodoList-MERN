@@ -113,7 +113,6 @@ export default function Home() {
                     <List 
                         key={index} 
                         list={list} 
-                        onEditHandler={() => history.push(`/editlist/${list._id}`)} 
                         onDeleteHandler={() => deleteList(list._id)}
                         onChangeHandler={(e) => handleOnChange(e, list._id)}
                         onSubmitHandler={(e) => handleOnSubmit(e, list._id)}

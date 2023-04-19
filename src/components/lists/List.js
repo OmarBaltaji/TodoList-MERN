@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '../common/Button';
 import {checkIfObjEmpty} from '../../utilities';
 import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

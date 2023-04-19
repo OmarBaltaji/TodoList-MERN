@@ -53,7 +53,7 @@ const updateList = async (req, res) => {
     throw new NotFoundError(`List with id ${listId} does not exist`);
   }
 
-  return res.status(StatusCodes.OK).json(`${list.title} updated successfully`);
+  return res.status(StatusCodes.OK).json({ list });
 }
 
 module.exports = {

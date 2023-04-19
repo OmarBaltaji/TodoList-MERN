@@ -14,16 +14,35 @@ export default function Home() {
         getAllLists();
     }, []);
 
-    async function handleOnSubmit(e) {
+    async function handleOnSubmit(e, listId) {
         e.preventDefault();
-        const formData = { title };
+        let formData = { title };
+        if(listId) {
+            const listToUpdate = lists.find(list => list._id === listId);
+            formData.title = listToUpdate.title;
+        }
 
         try {
-            const {data: {list: newList}} = await api.createList(formData);
+            let data;
+            if(listId) {
+                data = await api.updateList(listId, formData);
+            } else {
+                data = await api.createList(formData);
+            }
+
             setLists(oldLists => {
-                const lastListIndex = [oldLists.length - 1];
-                oldLists[lastListIndex] = newList;
-                return oldLists;
+                if(listId) {
+                    return oldLists.map(list => {
+                        if(list._id === listId) {
+                            return data.data.list;
+                        }
+                        return list;
+                    })
+                } else {
+                    const lastListIndex = [oldLists.length - 1];
+                    oldLists[lastListIndex] = data.data.list;
+                    return oldLists;
+                }
             });
             setTitle('');
         } catch (err) {
@@ -36,7 +55,7 @@ export default function Home() {
             const {data: {lists}} = await api.getAllLists();
             setLists(lists);
         } catch (err) {
-            console.err(err);
+            console.error(err);
         }
     }
 
@@ -53,9 +72,38 @@ export default function Home() {
         setLists(oldLists => [...oldLists, {}]);
     }
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e, listId = null) => {
         if(e.key === 'Enter')
-            handleOnSubmit(e);
+            handleOnSubmit(e, listId);
+        else if (e.key === 'Escape') {
+            toggleEditForm(listId, false);
+        }
+    }
+
+    const toggleEditForm = (listId, shouldShow) => {
+        if(!listId) {
+            setLists(oldLists => oldLists.slice(0, -1));
+            return;
+        } 
+
+        setLists(oldLists => oldLists.map(list => {
+            if (list._id === listId)
+                list.showEditForm = shouldShow;
+            return list;
+        }));
+    }
+
+    const handleOnChange = (e, listId) => {
+        if(listId) {
+            setLists(oldLists => oldLists.map(list => {
+                if(list._id === listId) {
+                    list.title = e.target.value;
+                }
+                return list;
+            }))
+        } else {
+            setTitle(e.target.value)
+        }
     }
 
     function displayAllLists() {
@@ -67,17 +115,21 @@ export default function Home() {
                         list={list} 
                         onEditHandler={() => history.push(`/editlist/${list._id}`)} 
                         onDeleteHandler={() => deleteList(list._id)}
-                        onChangeHandler={(e) => setTitle(e.target.value)}
-                        onSubmitHandler={(e) => handleOnSubmit(e)}
+                        onChangeHandler={(e) => handleOnChange(e, list._id)}
+                        onSubmitHandler={(e) => handleOnSubmit(e, list._id)}
                         titleValue={title} 
-                        handleKeyDown={handleKeyDown}
+                        handleKeyDown={(e) => handleKeyDown(e, list._id)}
+                        handleShowEditForm={() => toggleEditForm(list._id, true)}
+                        handleOnBlur={() => toggleEditForm(list._id, false)}
                     />
                 ))}
                 <div className='col-md-3 my-3'>
                     <div className='card'>
                         <div className='card-body d-flex align-items-center justify-content-center'>
-                            <strong className='mr-3'>Add a new list</strong>
-                            <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} onClick={addNewList} />
+                            <span className='cursor-pointer d-flex align-items-center' onClick={addNewList}>
+                                <strong className='mr-3'>Add a new list</strong>
+                                <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} />
+                            </span>
                         </div>
                     </div>
                 </div>

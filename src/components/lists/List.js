@@ -5,19 +5,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm}) {
-  const displayNewEmptyList = () => (
-    <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} />
+  const displayForm = (value, isEdit) => (
+    <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} />
+  )
+
+  const displayEmptyListForm = () => (
+    displayForm(titleValue, false)
   );
 
   const displayEditTitleForm = (list) => (
-    <Form handleOnChange={onChangeHandler} value={list.title} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={true} />
+    displayForm(list.title, true)
   )
 
   const displayExistingList = () => (
     <>
-      <div className='card--header position-relative text-danger'>
-        <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer' icon={faTrashCan} onClick={onDeleteHandler} />
-      </div>
       <div 
         className='card-title d-flex justify-content-center align-items-center text-dark h-100 mb-0' 
         onClick={handleShowTitleForm} 
@@ -34,7 +35,10 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
   return (
     <div className='col-md-3 my-3'>
       <div className='card'>
-        {checkIfObjEmpty(list) ? displayNewEmptyList() : displayExistingList()}
+        <div className='card--header position-relative text-danger'>
+          <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer' icon={faTrashCan} onClick={onDeleteHandler} />
+        </div>
+        {checkIfObjEmpty(list) ? displayEmptyListForm() : displayExistingList()}
       </div>
     </div>
   );

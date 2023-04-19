@@ -4,6 +4,7 @@ import api from '../api';
 import List from './lists/List';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { checkIfObjEmpty } from '../utilities';
 
 export default function Home() {
     const [title, setTitle] = useState('');
@@ -64,7 +65,7 @@ export default function Home() {
             setLists(oldLists => oldLists.slice(0, -1));
             return;
         }
-        
+
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));
@@ -87,13 +88,17 @@ export default function Home() {
 
     const toggleTitleForm = (listId, shouldShow) => {
         if(!listId) {
-            setLists(oldLists => oldLists.slice(0, -1));
+            deleteList();
             return;
         } 
 
         setLists(oldLists => oldLists.map(list => {
             if (list._id === listId)
                 list.showTitleForm = shouldShow;
+            else if (checkIfObjEmpty(list)) 
+                deleteList()
+            else 
+                list.showTitleForm = false;
             return list;
         }));
     }

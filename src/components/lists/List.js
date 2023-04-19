@@ -5,13 +5,13 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
-export default function List({list, onEditHandler, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, handleOnBlur}) {
+export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm}) {
   const displayNewEmptyList = () => (
-    <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} handleOnBlur={handleOnBlur} />
+    <Form handleOnChange={onChangeHandler} value={titleValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} />
   );
 
   const displayEditTitleForm = (list) => (
-    <Form handleOnChange={onChangeHandler} value={list.title} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={true} handleOnBlur={handleOnBlur} />
+    <Form handleOnChange={onChangeHandler} value={list.title} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={true} />
   )
 
   const displayExistingList = () => (

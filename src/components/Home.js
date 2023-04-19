@@ -120,7 +120,6 @@ export default function Home() {
                         titleValue={title} 
                         handleKeyDown={(e) => handleKeyDown(e, list._id)}
                         handleShowTitleForm={() => toggleTitleForm(list._id, true)}
-                        handleOnBlur={() => toggleTitleForm(list._id, false)}
                     />
                 ))}
                 <div className='col-md-3 my-3'>

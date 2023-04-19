@@ -2,7 +2,7 @@ import React from 'react';
 import Button from './Button';
 import '../../styles/css/form.css';
 
-export default function Form({handleOnSubmit, value, handleOnChange, handleKeyDown, isEdit = false, inputPlaceholder = "Please enter a title for your list", handleOnBlur}) {
+export default function Form({handleOnSubmit, value, handleOnChange, handleKeyDown, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
  
   return (
     <form className='d-flex justify-content-center align-items-center w-100 h-100'>
@@ -15,7 +15,7 @@ export default function Form({handleOnSubmit, value, handleOnChange, handleKeyDo
           onChange={handleOnChange}
           placeholder={inputPlaceholder}
           onKeyDown={handleKeyDown}
-          onBlur={handleOnBlur}
+          autoFocus
       />
       <Button 
           className="btn btn-outline-primary border-rounded-end"  

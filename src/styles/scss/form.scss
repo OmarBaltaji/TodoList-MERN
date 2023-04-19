@@ -4,16 +4,19 @@
 }
 
 .card {
-  height: 8.75rem;
-  .card-body:hover {
-    opacity: .7;
-    cursor: pointer;
-  }
+  height: 10rem;
 
   .card--header {
-    svg:hover {
-      opacity: .7;
-      cursor: pointer;
+    svg.delete-icon {
+      top: 20px;
+      right: 20px;
+      &:hover {
+        opacity: .7;
+      }
     }
   }
+}
+
+.cursor-pointer:hover {
+  cursor: pointer;
 }

@@ -1,1 +1,1 @@
-.border-rounded-end{border-top-left-radius:0 !important;border-bottom-left-radius:0 !important}.card{height:8.75rem}.card .card-body:hover{opacity:.7;cursor:pointer}.card .card--header svg:hover{opacity:.7;cursor:pointer}
+.border-rounded-end{border-top-left-radius:0 !important;border-bottom-left-radius:0 !important}.card{height:10rem}.card .card--header svg.delete-icon{top:20px;right:20px}.card .card--header svg.delete-icon:hover{opacity:.7}.cursor-pointer:hover{cursor:pointer}

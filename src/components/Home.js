@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import { useHistory} from 'react-router-dom';
 import api from '../api';
 import List from './lists/List';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +8,6 @@ import { checkIfObjEmpty } from '../utilities';
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
-    const history = useHistory();
 
     useEffect(() => {
         getAllLists();
@@ -18,21 +16,21 @@ export default function Home() {
     async function handleOnSubmit(e, listId) {
         e.preventDefault();
         let formData = { title };
-        if(listId) {
+        if (listId) {
             const listToUpdate = lists.find(list => list._id === listId);
             formData.title = listToUpdate.title;
         }
 
         try {
             let data;
-            if(listId) {
+            if (listId) {
                 data = await api.updateList(listId, formData);
             } else {
                 data = await api.createList(formData);
             }
 
             setLists(oldLists => {
-                if(listId) {
+                if (listId) {
                     return oldLists.map(list => {
                         if(list._id === listId) {
                             return data.data.list;
@@ -61,7 +59,7 @@ export default function Home() {
     }
 
     async function deleteList(id) {
-        if(!id) {
+        if (!id) {
             setLists(oldLists => oldLists.slice(0, -1));
             return;
         }
@@ -79,7 +77,7 @@ export default function Home() {
     }
 
     const handleKeyDown = (e, listId = null) => {
-        if(e.key === 'Enter')
+        if (e.key === 'Enter')
             handleOnSubmit(e, listId);
         else if (e.key === 'Escape') {
             toggleTitleForm(listId, false);
@@ -87,7 +85,7 @@ export default function Home() {
     }
 
     const toggleTitleForm = (listId, shouldShow) => {
-        if(!listId) {
+        if (!listId) {
             deleteList();
             return;
         } 
@@ -96,7 +94,7 @@ export default function Home() {
             if (list._id === listId)
                 list.showTitleForm = shouldShow;
             else if (checkIfObjEmpty(list)) 
-                deleteList()
+                deleteList();
             else 
                 list.showTitleForm = false;
             return list;
@@ -104,15 +102,14 @@ export default function Home() {
     }
 
     const handleOnChange = (e, listId) => {
-        if(listId) {
+        if (listId) {
             setLists(oldLists => oldLists.map(list => {
-                if(list._id === listId) {
+                if (list._id === listId)
                     list.title = e.target.value;
-                }
                 return list;
             }))
         } else {
-            setTitle(e.target.value)
+            setTitle(e.target.value);
         }
     }
 

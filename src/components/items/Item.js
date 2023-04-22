@@ -7,7 +7,7 @@ export default function Item ({item, onChangeHandler, onDeleteHandler}) {
 
   return (
     <div className="list-group-item d-flex">
-        <span className='mr-3'>{item.name}</span>
+        <span className={'mr-3 ' + (item.done ? 'text-decoration-line-through' : '')}>{item.name}</span>
         <div className='mr-auto position-relative hoverable'>
           <input className='item-check-box opacity-0 cursor-pointer' type="checkbox" onChange={onChangeHandler} checked={item.done}  />
           <FontAwesomeIcon icon={faCheck} className={item.done ? 'text-success' : ''} />

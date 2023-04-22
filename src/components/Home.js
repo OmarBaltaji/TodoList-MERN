@@ -51,8 +51,21 @@ export default function Home() {
 
     async function getAllLists() {
         try {
-            const {data: {lists}} = await api.getAllLists();
-            setLists(lists);
+            const {data: {lists: fetchedLists}} = await api.getAllLists();
+            const modifiedFetchedLists = await Promise.all(fetchedLists.map(async list => {
+                return await getListItems(list);
+            }));
+            setLists(modifiedFetchedLists);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function getListItems(list) {
+        try {
+            const {data: {items}} = await api.getListItems(list._id);
+            list.items = items;
+            return list;
         } catch (err) {
             console.error(err);
         }
@@ -113,6 +126,41 @@ export default function Home() {
         }
     }
 
+    const itemOnChangeHandler = async (e, itemId) => {
+        const formData = { done: e.target.checked }
+
+        try {
+            const {data: {item: updatedItem}} = await api.updateItem(itemId, formData);
+            setLists(oldLists =>
+                oldLists.map(list => {
+                    list.items = list.items.map(item => {
+                        if(item._id === itemId) {
+                            return { ...item, done: updatedItem.done };
+                        }
+                        return item;
+                    })
+                    return list;
+                })
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const itemOnDeleteHandler = async (e, itemId) => {
+        try {
+            const {data: successMessage} = await api.deleteItem(itemId);
+            setLists(oldLists => 
+                oldLists.map(list => {
+                    list.items = list.items.filter(item => item._id !== itemId);
+                    return list;
+                })
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     function displayAllLists() {
         return(
             <div className='row col-md-12 px-5'>
@@ -127,13 +175,15 @@ export default function Home() {
                         handleKeyDown={(e) => handleKeyDown(e, list._id)}
                         handleShowTitleForm={() => toggleTitleForm(list._id, true)}
                         handleOnMouseLeave={() => toggleTitleForm(list._id, false)}
+                        itemOnChangeHandler={itemOnChangeHandler}
+                        itemOnDeleteHandler={itemOnDeleteHandler}
                     />
                 ))}
                 <div className='col-md-3 my-3'>
                     <div className='card'>
                         <div className='card-body d-flex align-items-center justify-content-center'>
                             <span className='cursor-pointer d-flex align-items-center' onClick={addNewList}>
-                                <strong className='mr-3'>Add a new list</strong>
+                                <strong className='mr-3'>Add List</strong>
                                 <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} />
                             </span>
                         </div>

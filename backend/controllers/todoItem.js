@@ -72,7 +72,7 @@ const updateItem = async (req, res) => {
     throw new NotFoundError(`Item with id ${itemId} does not exist`);
   }
 
-  return res.status(StatusCodes.OK).json(`Item "${item.name}" updated successfully`);
+  return res.status(StatusCodes.OK).json({ item });
 }
 
 module.exports = {

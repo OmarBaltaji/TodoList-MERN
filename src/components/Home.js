@@ -126,6 +126,39 @@ export default function Home() {
         }
     }
 
+    function displayAllLists() {
+        return(
+            <div className='row col-md-12 px-5'>
+                {lists.map((list, index) => (
+                    <List 
+                        key={index} 
+                        list={list} 
+                        onDeleteHandler={() => deleteList(list._id)}
+                        onChangeHandler={(e) => handleOnChange(e, list._id)}
+                        onSubmitHandler={(e) => handleOnSubmit(e, list._id)}
+                        titleValue={title} 
+                        handleKeyDown={(e) => handleKeyDown(e, list._id)}
+                        handleShowTitleForm={() => toggleTitleForm(list._id, true)}
+                        handleOnMouseLeave={() => toggleTitleForm(list._id, false)}
+                        itemOnChangeHandler={itemOnChangeHandler}
+                        itemOnDeleteHandler={itemOnDeleteHandler}
+                    />
+                ))}
+                <div className='col-md-3 my-3'>
+                    <div className='card'>
+                        <div className='card-body d-flex align-items-center justify-content-center'>
+                            <span className='cursor-pointer d-flex align-items-center' onClick={addNewList}>
+                                <strong className='mr-3'>Add List</strong>
+                                <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    /* Items Handlers */
     const itemOnChangeHandler = async (e, itemId) => {
         const formData = { done: e.target.checked }
 
@@ -159,39 +192,6 @@ export default function Home() {
         } catch (err) {
             console.error(err);
         }
-    }
-
-    function displayAllLists() {
-        return(
-            <div className='row col-md-12 px-5'>
-                {lists.map((list, index) => (
-                    <List 
-                        key={index} 
-                        list={list} 
-                        onDeleteHandler={() => deleteList(list._id)}
-                        onChangeHandler={(e) => handleOnChange(e, list._id)}
-                        onSubmitHandler={(e) => handleOnSubmit(e, list._id)}
-                        titleValue={title} 
-                        handleKeyDown={(e) => handleKeyDown(e, list._id)}
-                        handleShowTitleForm={() => toggleTitleForm(list._id, true)}
-                        handleOnMouseLeave={() => toggleTitleForm(list._id, false)}
-                        itemOnChangeHandler={itemOnChangeHandler}
-                        itemOnDeleteHandler={itemOnDeleteHandler}
-                    />
-                ))}
-                <div className='col-md-3 my-3'>
-                    <div className='card'>
-                        <div className='card-body d-flex align-items-center justify-content-center'>
-                            <span className='cursor-pointer d-flex align-items-center' onClick={addNewList}>
-                                <strong className='mr-3'>Add List</strong>
-                                <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} />
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-     
     }
 
     return (

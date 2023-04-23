@@ -149,7 +149,7 @@ export default function Home() {
                     />
                 ))}
                 <div className='col-md-3 my-3' key='adding-new-list'>
-                    <div className='card'>
+                    <div className='card shadow'>
                         <div className='card-body d-flex align-items-center justify-content-center my-5'>
                             <span className='cursor-pointer d-flex align-items-center hoverable' onClick={addNewList}>
                                 <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "2rem" }} />

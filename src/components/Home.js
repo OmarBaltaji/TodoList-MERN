@@ -33,9 +33,8 @@ export default function Home() {
             setLists(oldLists => {
                 if (listId) {
                     return oldLists.map(list => {
-                        if(list._id === listId) {
-                            return data.data.list;
-                        }
+                        if(list._id === listId)
+                            list = {...list, showTitleForm: false, ...data.data.list};
                         return list;
                     })
                 } else {

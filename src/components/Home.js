@@ -139,7 +139,6 @@ export default function Home() {
                         titleValue={title} 
                         handleKeyDown={(e) => handleKeyDown(e, list._id)}
                         handleShowTitleForm={() => toggleTitleForm(list._id, true)}
-                        handleOnMouseLeave={() => toggleTitleForm(list._id, false)}
                         itemOnChangeHandler={itemOnChangeHandler}
                         itemOnDeleteHandler={itemOnDeleteHandler}
                         itemOnSubmitHandler={itemOnSubmitHandler}

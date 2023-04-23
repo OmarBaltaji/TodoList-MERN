@@ -64,7 +64,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
 
   return (
     <div className='col-md-3 my-3'>
-      <div className='card'>
+      <div className={'card ' + (list.items && list.items.length > 4 ? 'scrollable' : '')}>
         <div className='card--header position-relative text-danger'>
           <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer hoverable' icon={faTrashCan} onClick={onDeleteHandler} />
         </div>

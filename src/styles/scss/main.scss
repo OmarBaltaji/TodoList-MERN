@@ -5,6 +5,10 @@
 
 .card {
   min-height: 170px;
+  &.scrollable {
+    overflow-y: auto;
+    max-height: 366px;
+  }
 
   .card--header {
     svg.delete-icon {

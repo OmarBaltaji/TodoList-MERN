@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Item from '../items/Item';
 
-export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, handleOnMouseLeave, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue}) {
+export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, handleOnMouseLeave, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm}) {
   const displayForm = (value, isEdit) => (
     <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} />
   )
@@ -30,7 +30,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
           onClick={handleShowTitleForm} 
           onKeyDown={handleKeyDown}
         >
-          {list.showTitleForm ? displayEditTitleForm(list) : <span className='card-title-text cursor-pointer'>{list.title}</span>}
+          {list.showTitleForm ? displayEditTitleForm(list) : <span className='card-title-text hoverable cursor-pointer'>{list.title}</span>}
         </div>
         <div className='card-text'>
           <ul className="list-group">
@@ -39,13 +39,14 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                   <Item 
                     item={item} 
                     listId = {list._id}
-                    onChangeHandler={(e) => itemOnChangeHandler(e, item._id)} 
-                    onDeleteHandler={(e) => itemOnDeleteHandler(e, item._id)} 
+                    onChangeHandler={(e) => itemOnChangeHandler(e, list._id, item._id)} 
+                    onDeleteHandler={(e) => itemOnDeleteHandler(e, list._id, item._id)} 
                     onCheckHandler={(e) => itemOnCheckHandler(e, item._id)}
-                    onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item.name)}
-                    handleKeyDown={(e) => handleKeyDown(e, list._id)}
+                    onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item)}
+                    handleKeyDown={(e) => itemOnHandleKeyDown(e, list._id, item)}
+                    handleShowItemNameForm={() => handleShowItemNameForm(list._id, item._id, true)}
                     key={item._id ?? 'newly-added-item'}   
-                    itemNameValue={itemNameValue}
+                    itemNameValue={item.name ?? itemNameValue}
                   />
                 )
               }

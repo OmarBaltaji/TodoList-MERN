@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Item from '../items/Item';
 
-export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm}) {
+export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm, handleClickOutsideForm}) {
   const displayForm = (value, isEdit) => (
-    <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} />
+    <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} listId={list._id} handleClickOutsideForm={handleClickOutsideForm} />
   )
 
   const displayEmptyListForm = () => (
@@ -30,7 +30,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
           onClick={handleShowTitleForm} 
           onKeyDown={handleKeyDown}
         >
-          {list.showTitleForm ? displayEditTitleForm(list) : <span className='card-title-text hoverable cursor-pointer'>{list.title}</span>}
+          {list.showTitleForm ? displayEditTitleForm(list) : <span title='Edit' className='card-title-text hoverable cursor-pointer'>{list.title}</span>}
         </div>
         <div className='card-text'>
           <ul className="list-group">
@@ -45,6 +45,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                     onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item)}
                     handleKeyDown={(e) => itemOnHandleKeyDown(e, list._id, item)}
                     handleShowItemNameForm={() => handleShowItemNameForm(list._id, item, true)}
+                    handleClickOutsideForm={handleClickOutsideForm}
                     key={item._id ?? 'newly-added-item'}   
                     itemNameValue={item.name ?? itemNameValue}
                   />

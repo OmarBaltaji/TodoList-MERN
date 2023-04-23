@@ -146,6 +146,7 @@ export default function Home() {
                         addNewItemHandler={addNewItem}
                         itemNameValue={newItemName}
                         handleShowItemNameForm={toggleItemForm}
+                        handleClickOutsideForm={handleClickOutsideForm}
                     />
                 ))}
                 <div className='col-md-3 my-3' key='adding-new-list'>
@@ -309,6 +310,13 @@ export default function Home() {
             itemOnSubmitHandler(e, listId, item);
         else if (e.key === 'Escape')
             toggleItemForm(listId, item, false);
+    }
+
+    const handleClickOutsideForm = (listId, item) => {
+        if(item) 
+            toggleItemForm(listId, item, false);
+        else
+            toggleTitleForm(listId, false);
     }
 
     return (

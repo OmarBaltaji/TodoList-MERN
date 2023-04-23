@@ -93,9 +93,8 @@ export default function Home() {
     const handleKeyDown = (e, listId = null) => {
         if (e.key === 'Enter')
             handleOnSubmit(e, listId);
-        else if (e.key === 'Escape') {
+        else if (e.key === 'Escape') 
             toggleTitleForm(listId, false);
-        }
     }
 
     const toggleTitleForm = (listId, shouldShow) => {
@@ -145,8 +144,10 @@ export default function Home() {
                         itemOnDeleteHandler={itemOnDeleteHandler}
                         itemOnSubmitHandler={itemOnSubmitHandler}
                         itemOnCheckHandler={itemOnCheckHandler}
+                        itemOnHandleKeyDown={itemOnHandleKeyDown}
                         addNewItemHandler={addNewItem}
                         itemNameValue={newItemName}
+                        handleShowItemNameForm={toggleItemForm}
                     />
                 ))}
                 <div className='col-md-3 my-3'>
@@ -185,43 +186,50 @@ export default function Home() {
         }
     }
 
-    const itemOnDeleteHandler = async (e, itemId) => {
-        try {
-            const {data: successMessage} = await api.deleteItem(itemId);
-            setLists(oldLists => 
-                oldLists.map(list => {
-                    list.items = list.items.filter(item => item._id !== itemId);
-                    return list;
-                })
-            );
-        } catch (err) {
-            console.error(err);
+    const itemOnDeleteHandler = async (listId, itemId) => {
+        if(!itemId) {
+            setLists(oldLists => oldLists.map(list => {
+                if (list._id === listId)
+                    list = {...list, items: list.items.slice(0, -1)}
+                return list;
+            }));
+        } else {
+            try {
+                const {data: successMessage} = await api.deleteItem(itemId);
+                setLists(oldLists => 
+                    oldLists.map(list => {
+                        list.items = list.items.filter(item => item._id !== itemId);
+                        return list;
+                    })
+                );
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 
     const toggleItemForm = (listId, itemId, shouldShow) => {
-        if (!listId) {
-            deleteList();
+        if (!itemId) {
+            itemOnDeleteHandler(listId, itemId);
             return;
         } 
 
-        setLists(oldLists => {
+        setLists(oldLists => 
             oldLists.map(list => {
                 if(list._id === listId) {
-                    list.items = oldLists.items.map(item => {
+                    const modifiedItems = list.items.map(item => {
                         if (item._id === itemId)
-                            item.showNameForm = true;
-                        else if (checkIfObjEmpty(item)) 
-                            itemOnDeleteHandler(itemId);
-                        else 
+                            item.showNameForm = shouldShow;
+                        else
                             item.showNameForm = false;
                         
                         return item;
                     });
+                    list = {...list, items: [...modifiedItems]};
                 }
                 return list;
             })
-        });
+        );
     }
     
     const addNewItem = (e, listId) => {
@@ -234,21 +242,35 @@ export default function Home() {
         ));
     }
 
-    const itemOnSubmitHandler = async (e, listId, itemName) => {
+    const itemOnSubmitHandler = async (e, listId, itemFromForm) => {
         e.preventDefault();
 
         const formData = {
-            "name":  newItemName ?? newItemName,
+            "name":  itemFromForm.name ?? newItemName,
             "listId": listId,
         }
 
         try {
-            const {data: {item: newItem}} = await api.createItem(formData);
+            let data;
+            if(itemFromForm._id)
+                data = await api.updateItem(itemFromForm._id, formData);
+            else
+                data = await api.createItem(formData);
+            
             setLists(oldLists => 
                 oldLists.map(list => {
                     if(list._id === listId) {
-                        const lastItemIndex = list.items.length - 1;
-                        list.items[lastItemIndex] = newItem;
+                        if(itemFromForm._id) {
+                            const modifiedListItems = list.items.map(item => {
+                                if(item._id === itemFromForm._id)
+                                    item = data.data.item;
+                                return item;
+                            });
+                            list = {...list, items: [...modifiedListItems]};
+                        } else {
+                            const lastItemIndex = list.items.length - 1;
+                            list.items[lastItemIndex] = data.data.item;
+                        }
                     }
                     return list;
                 }) 
@@ -259,12 +281,31 @@ export default function Home() {
         }
     }
 
-    const itemOnChangeHandler = async (e, itemId) => {
+    const itemOnChangeHandler = (e, listId, itemId) => {
         if (itemId) {
-
+            setLists(oldLists => 
+                oldLists.map(list => {
+                    if(list._id === listId) {
+                        const modifiedItems = list.items.map(item => {
+                            if(item._id === itemId)
+                                item.name = e.target.value
+                            return item;
+                        });
+                        list = {...list, items: [...modifiedItems]}
+                    } 
+                    return list;
+                })
+            )
         } else {
             setNewItemName(e.target.value);
         }
+    }
+
+    const itemOnHandleKeyDown = (e, listId, item) => {
+        if (e.key === 'Enter')
+            itemOnSubmitHandler(e, listId, item);
+        else if (e.key === 'Escape')
+            toggleItemForm(listId, item._id, false);
     }
 
     return (

@@ -234,8 +234,11 @@ export default function Home() {
     const addNewItem = (e, listId) => {
         setLists(oldLists => (
             oldLists.map(list => {
-                if(list._id === listId)
+                if(list._id === listId) {
+                    if(!list.items) 
+                        list.items = [];
                     list = {...list, items: [...list.items, {}]}
+                }
                 return list;
             })
         ));

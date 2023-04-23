@@ -8,6 +8,7 @@ import { checkIfObjEmpty } from '../utilities';
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
+    const [newItemName, setNewItemName] = useState('');
 
     useEffect(() => {
         getAllLists();
@@ -129,9 +130,9 @@ export default function Home() {
     function displayAllLists() {
         return(
             <div className='row col-md-12 px-5'>
-                {lists.map((list, index) => (
+                {lists.map((list) => (
                     <List 
-                        key={index} 
+                        key={list._id} 
                         list={list} 
                         onDeleteHandler={() => deleteList(list._id)}
                         onChangeHandler={(e) => handleOnChange(e, list._id)}
@@ -142,14 +143,18 @@ export default function Home() {
                         handleOnMouseLeave={() => toggleTitleForm(list._id, false)}
                         itemOnChangeHandler={itemOnChangeHandler}
                         itemOnDeleteHandler={itemOnDeleteHandler}
+                        itemOnSubmitHandler={itemOnSubmitHandler}
+                        itemOnCheckHandler={itemOnCheckHandler}
+                        addNewItemHandler={addNewItem}
+                        itemNameValue={newItemName}
                     />
                 ))}
                 <div className='col-md-3 my-3'>
                     <div className='card'>
-                        <div className='card-body d-flex align-items-center justify-content-center'>
-                            <span className='cursor-pointer d-flex align-items-center' onClick={addNewList}>
-                                <strong className='mr-3'>Add List</strong>
-                                <FontAwesomeIcon icon={faCirclePlus} style={{ fontSize: "3rem" }} />
+                        <div className='card-body d-flex align-items-center justify-content-center my-5'>
+                            <span className='cursor-pointer d-flex align-items-center hoverable' onClick={addNewList}>
+                                <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "2rem" }} />
+                                <strong>Add List</strong>
                             </span>
                         </div>
                     </div>
@@ -159,7 +164,7 @@ export default function Home() {
     }
 
     /* Items Handlers */
-    const itemOnChangeHandler = async (e, itemId) => {
+    const itemOnCheckHandler = async (e, itemId) => {
         const formData = { done: e.target.checked }
 
         try {
@@ -191,6 +196,74 @@ export default function Home() {
             );
         } catch (err) {
             console.error(err);
+        }
+    }
+
+    const toggleItemForm = (listId, itemId, shouldShow) => {
+        if (!listId) {
+            deleteList();
+            return;
+        } 
+
+        setLists(oldLists => {
+            oldLists.map(list => {
+                if(list._id === listId) {
+                    list.items = oldLists.items.map(item => {
+                        if (item._id === itemId)
+                            item.showNameForm = true;
+                        else if (checkIfObjEmpty(item)) 
+                            itemOnDeleteHandler(itemId);
+                        else 
+                            item.showNameForm = false;
+                        
+                        return item;
+                    });
+                }
+                return list;
+            })
+        });
+    }
+    
+    const addNewItem = (e, listId) => {
+        setLists(oldLists => (
+            oldLists.map(list => {
+                if(list._id === listId)
+                    list = {...list, items: [...list.items, {}]}
+                return list;
+            })
+        ));
+    }
+
+    const itemOnSubmitHandler = async (e, listId, itemName) => {
+        e.preventDefault();
+
+        const formData = {
+            "name":  newItemName ?? newItemName,
+            "listId": listId,
+        }
+
+        try {
+            const {data: {item: newItem}} = await api.createItem(formData);
+            setLists(oldLists => 
+                oldLists.map(list => {
+                    if(list._id === listId) {
+                        const lastItemIndex = list.items.length - 1;
+                        list.items[lastItemIndex] = newItem;
+                    }
+                    return list;
+                }) 
+            );
+            setNewItemName('');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const itemOnChangeHandler = async (e, itemId) => {
+        if (itemId) {
+
+        } else {
+            setNewItemName(e.target.value);
         }
     }
 

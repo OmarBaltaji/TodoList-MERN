@@ -40,7 +40,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                     item={item} 
                     listId = {list._id}
                     onChangeHandler={(e) => itemOnChangeHandler(e, list._id, item._id)} 
-                    onDeleteHandler={(e) => itemOnDeleteHandler(e, list._id, item._id)} 
+                    onDeleteHandler={() => itemOnDeleteHandler(list._id, item._id)} 
                     onCheckHandler={(e) => itemOnCheckHandler(e, item._id)}
                     onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item)}
                     handleKeyDown={(e) => itemOnHandleKeyDown(e, list._id, item)}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from './Button';
-import '../../styles/css/form.css';
+import '../../styles/css/main.css';
 
 export default function Form({handleOnSubmit, value, handleOnChange, handleKeyDown, isEdit = false, inputPlaceholder = "Please enter a title for your list"}) {
  

@@ -11,8 +11,8 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
   )
 
   const displayEmptyListForm = () => (
-    <div className='card'>
-      <div className='card-boy my-5'>
+    <div className='card justify-content-center'>
+      <div className='my-5'>
         {displayForm(titleValue, false)}
       </div>
     </div>

@@ -11,7 +11,7 @@ export default function Item ({item, onChangeHandler, onDeleteHandler, onSubmitH
 
   const displayItem = () => (
     <>
-      <span className={'mr-3 hoverable cursor-pointer ' + (item.done ? 'text-decoration-line-through' : '')} onClick={handleShowItemNameForm}>{item.name}</span>
+      <span className={'mr-3 ' + (item.done ? 'text-decoration-line-through' : 'hoverable cursor-pointer')} onClick={handleShowItemNameForm}>{item.name}</span>
       <div className='mr-auto position-relative hoverable'>
         <input className='item-check-box opacity-0 cursor-pointer' type="checkbox" onChange={onCheckHandler} checked={item.done}  />
         <FontAwesomeIcon icon={faCheck} className={'hoverable ' + (item.done ? 'text-success' : '')} />

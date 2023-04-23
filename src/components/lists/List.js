@@ -44,7 +44,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                     onCheckHandler={(e) => itemOnCheckHandler(e, item._id)}
                     onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item)}
                     handleKeyDown={(e) => itemOnHandleKeyDown(e, list._id, item)}
-                    handleShowItemNameForm={() => handleShowItemNameForm(list._id, item._id, true)}
+                    handleShowItemNameForm={() => handleShowItemNameForm(list._id, item, true)}
                     key={item._id ?? 'newly-added-item'}   
                     itemNameValue={item.name ?? itemNameValue}
                   />

@@ -206,17 +206,19 @@ export default function Home() {
         }
     }
 
-    const toggleItemForm = (listId, itemId, shouldShow) => {
-        if (!itemId) {
-            itemOnDeleteHandler(listId, itemId);
+    const toggleItemForm = (listId, itemFromForm, shouldShow) => {
+        if (!itemFromForm._id) {
+            itemOnDeleteHandler(listId, itemFromForm._id);
             return;
-        } 
+        } else if (itemFromForm.done) {
+            return;
+        }
 
         setLists(oldLists => 
             oldLists.map(list => {
                 if(list._id === listId) {
                     const modifiedItems = list.items.map(item => {
-                        if (item._id === itemId)
+                        if (item._id === itemFromForm._id)
                             item.showNameForm = shouldShow;
                         else
                             item.showNameForm = false;
@@ -306,7 +308,7 @@ export default function Home() {
         if (e.key === 'Enter')
             itemOnSubmitHandler(e, listId, item);
         else if (e.key === 'Escape')
-            toggleItemForm(listId, item._id, false);
+            toggleItemForm(listId, item, false);
     }
 
     return (

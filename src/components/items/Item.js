@@ -16,7 +16,6 @@ export default function Item ({item, onChangeHandler, onDeleteHandler, onSubmitH
         <input className='item-check-box opacity-0 cursor-pointer' type="checkbox" onChange={onCheckHandler} checked={item.done}  />
         <FontAwesomeIcon icon={faCheck} className={'hoverable ' + (item.done ? 'text-success' : '')} />
       </div>
-      {/* <Button className="btn-primary mr-3" onClickHandler={() => history.push(`/edititem/${item._id}`)} innerText="Edit" /> */}
       <FontAwesomeIcon className='delete-icon cursor-pointer text-danger hoverable' icon={faXmark} onClick={onDeleteHandler} />
     </>
   )

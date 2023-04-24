@@ -342,7 +342,7 @@ export default function Home() {
 
     return (
         <>
-            <ToastContainer />
+            <ToastContainer autoClose={3000} />
             <div className="mt-4 d-flex align-items-center flex-column">
                 <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
                 {displayAllLists()}

@@ -4,11 +4,13 @@ import List from './lists/List';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
+import Toast from './common/Toast';
 
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
     const [newItemName, setNewItemName] = useState('');
+    const [toast, setToast] = useState({show: false, message: ''});
 
     useEffect(() => {
         getAllLists();
@@ -80,6 +82,7 @@ export default function Home() {
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));
+            setToast({show: true, message: 'List deleted successfully', type: 'success'});
         } catch (err) {
             console.error(err);
         }
@@ -212,7 +215,7 @@ export default function Home() {
 
     const toggleItemForm = (listId, itemFromForm, shouldShow) => {
         if (!itemFromForm._id) {
-            itemOnDeleteHandler(listId, itemFromForm._id);
+            itemOnDeleteHandler(listId);
             return;
         } else if (itemFromForm.done) {
             return;
@@ -319,16 +322,26 @@ export default function Home() {
         if(!listId) 
             return;
 
+        if(item && !item._id) {
+            itemOnDeleteHandler(listId);
+            return;
+        }
+
         if(item) 
             toggleItemForm(listId, item, false);
         else
             toggleTitleForm(listId, false);
     }
 
+    const onCloseToast = () => setToast({show: false, message: ''})
+
     return (
-        <div className="mt-4 d-flex align-items-center flex-column">
-            <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
-            {displayAllLists()}
-        </div>
+        <>
+            <Toast show={toast.show} message={toast.message} type={toast.type} onCloseToast={onCloseToast} />
+            <div className="mt-4 d-flex align-items-center flex-column">
+                <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
+                {displayAllLists()}
+            </div>
+        </>
     );
 }

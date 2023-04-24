@@ -221,9 +221,6 @@ export default function Home() {
     }
 
     const itemOnDeleteHandler = async (listId, itemId) => {
-        if (!confirm("Are you sure you want to delete this item?"))
-            return;
-
         if(!itemId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)
@@ -231,6 +228,9 @@ export default function Home() {
                 return list;
             }));
         } else {
+            if (!confirm("Are you sure you want to delete this item?"))
+                return;
+
             try {
                 const {data: successMessage} = await api.deleteItem(itemId);
                 setLists(oldLists => 

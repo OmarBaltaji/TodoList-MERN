@@ -4,14 +4,13 @@ import List from './lists/List';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
-import Toast from './common/Toast';
-import { nanoid } from 'nanoid';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
     const [newItemName, setNewItemName] = useState('');
-    const [toasts, setToasts] = useState([]);
 
     useEffect(() => {
         getAllLists();
@@ -47,8 +46,10 @@ export default function Home() {
                 }
             });
             setTitle('');
+            const toastMessage = listId ? 'List updated successfully' : 'List created successfully';
+            toast.success(toastMessage);
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);
         }
     }
 
@@ -60,7 +61,7 @@ export default function Home() {
             }));
             setLists(modifiedFetchedLists);
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);
         }
     }
 
@@ -70,7 +71,7 @@ export default function Home() {
             list.items = items;
             return list;
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);;
         }
     }
 
@@ -83,9 +84,9 @@ export default function Home() {
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));
-            setToasts(oldToasts =>  [...oldToasts, {id: nanoid(), show: true, message: 'List deleted successfully', type: 'success'}]);
+            toast.success('List deleted successfully');
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);;
         }
     }
 
@@ -94,6 +95,7 @@ export default function Home() {
     }
 
     const handleKeyDown = (e, listId = null) => {
+        e.stopPropagation();
         if (e.key === 'Enter')
             handleOnSubmit(e, listId);
         else if (e.key === 'Escape') 
@@ -188,7 +190,7 @@ export default function Home() {
                 })
             );
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);;
         }
     }
 
@@ -209,7 +211,7 @@ export default function Home() {
                     })
                 );
             } catch (err) {
-                console.error(err);
+                toast.error(err.response.data.message);;
             }
         }
     }
@@ -288,7 +290,7 @@ export default function Home() {
             );
             setNewItemName('');
         } catch (err) {
-            console.error(err);
+            toast.error(err.response.data.message);;
         }
     }
 
@@ -334,19 +336,9 @@ export default function Home() {
             toggleTitleForm(listId, false);
     }
 
-    const onCloseToast = (toastId) => (
-        setToasts(oldToasts => 
-            oldToasts.filter(toast => toast.id !== toastId)
-        )
-    )
-
     return (
         <>
-            <div className='position-absolute' style={{ top: '20px', right: '20px' }}>
-            {toasts.map(toast => 
-                <Toast key={toast.id} id={toast.id} show={toast.show} message={toast.message} type={toast.type} onCloseToast={onCloseToast} />
-            )}
-            </div>
+            <ToastContainer />
             <div className="mt-4 d-flex align-items-center flex-column">
                 <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
                 {displayAllLists()}

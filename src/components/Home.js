@@ -81,6 +81,12 @@ export default function Home() {
             return;
         }
 
+        const list = lists.find(list => list._id === id);
+        if(list.items && list.items.length > 0) {
+            toast.error("Can't delete list before removing its related items");
+            return;
+        }
+
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));

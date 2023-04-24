@@ -130,7 +130,7 @@ export default function Home() {
             <div className='row col-md-12 px-5'>
                 {lists.map((list) => (
                     <List 
-                        key={list._id} 
+                        key={list._id ?? "new-list-key"} 
                         list={list} 
                         onDeleteHandler={() => deleteList(list._id)}
                         onChangeHandler={(e) => handleOnChange(e, list._id)}
@@ -149,7 +149,7 @@ export default function Home() {
                         handleClickOutsideForm={handleClickOutsideForm}
                     />
                 ))}
-                <div className='col-md-3 my-3' key='adding-new-list'>
+                <div className='col-md-3 my-3'>
                     <div className='card shadow'>
                         <div className='card-body d-flex align-items-center justify-content-center my-5'>
                             <span className='cursor-pointer d-flex align-items-center hoverable' onClick={addNewList}>
@@ -313,6 +313,9 @@ export default function Home() {
     }
 
     const handleClickOutsideForm = (listId, item) => {
+        if(!listId) 
+            return;
+            
         if(item) 
             toggleItemForm(listId, item, false);
         else

@@ -5,12 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
 import Toast from './common/Toast';
+import { nanoid } from 'nanoid';
 
 export default function Home() {
     const [title, setTitle] = useState('');
     const [lists, setLists] = useState([]);
     const [newItemName, setNewItemName] = useState('');
-    const [toast, setToast] = useState({show: false, message: ''});
+    const [toasts, setToasts] = useState([]);
 
     useEffect(() => {
         getAllLists();
@@ -82,7 +83,7 @@ export default function Home() {
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter(list => list._id !== id));
-            setToast({show: true, message: 'List deleted successfully', type: 'success'});
+            setToasts(oldToasts =>  [...oldToasts, {id: nanoid(), show: true, message: 'List deleted successfully', type: 'success'}]);
         } catch (err) {
             console.error(err);
         }
@@ -333,11 +334,19 @@ export default function Home() {
             toggleTitleForm(listId, false);
     }
 
-    const onCloseToast = () => setToast({show: false, message: ''})
+    const onCloseToast = (toastId) => (
+        setToasts(oldToasts => 
+            oldToasts.filter(toast => toast.id !== toastId)
+        )
+    )
 
     return (
         <>
-            <Toast show={toast.show} message={toast.message} type={toast.type} onCloseToast={onCloseToast} />
+            <div className='position-absolute' style={{ top: '20px', right: '20px' }}>
+            {toasts.map(toast => 
+                <Toast key={toast.id} id={toast.id} show={toast.show} message={toast.message} type={toast.type} onCloseToast={onCloseToast} />
+            )}
+            </div>
             <div className="mt-4 d-flex align-items-center flex-column">
                 <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
                 {displayAllLists()}

@@ -94,7 +94,7 @@ export default function Home() {
         setLists(oldLists => [...oldLists, {}]);
     }
 
-    const handleKeyDown = (e, listId = null) => {
+    function handleKeyDown (e, listId = null) {
         e.stopPropagation();
         if (e.key === 'Enter')
             handleOnSubmit(e, listId);
@@ -102,7 +102,7 @@ export default function Home() {
             toggleTitleForm(listId, false);
     }
 
-    const toggleTitleForm = (listId, shouldShow) => {
+    function toggleTitleForm (listId, shouldShow) {
         if (!listId) {
             deleteList();
             return;
@@ -119,7 +119,7 @@ export default function Home() {
         }));
     }
 
-    const handleOnChange = (e, listId) => {
+    function handleOnChange (e, listId) {
         if (listId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)
@@ -129,6 +129,21 @@ export default function Home() {
         } else {
             setTitle(e.target.value);
         }
+    }
+
+    function handleClickOutsideForm (listId, item) {
+        if(!listId) 
+            return;
+
+        if(item && !item._id) {
+            itemOnDeleteHandler(listId);
+            return;
+        }
+
+        if(item) 
+            toggleItemForm(listId, item, false);
+        else
+            toggleTitleForm(listId, false);
     }
 
     function displayAllLists() {
@@ -319,21 +334,6 @@ export default function Home() {
             itemOnSubmitHandler(e, listId, item);
         else if (e.key === 'Escape')
             toggleItemForm(listId, item, false);
-    }
-
-    const handleClickOutsideForm = (listId, item) => {
-        if(!listId) 
-            return;
-
-        if(item && !item._id) {
-            itemOnDeleteHandler(listId);
-            return;
-        }
-
-        if(item) 
-            toggleItemForm(listId, item, false);
-        else
-            toggleTitleForm(listId, false);
     }
 
     return (

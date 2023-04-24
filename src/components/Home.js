@@ -204,6 +204,7 @@ export default function Home() {
                     return list;
                 })
             );
+            toast.success('Item updated successfully');
         } catch (err) {
             toast.error(err.response.data.message);;
         }
@@ -225,6 +226,7 @@ export default function Home() {
                         return list;
                     })
                 );
+                toast.success('Item deleted successfully');
             } catch (err) {
                 toast.error(err.response.data.message);;
             }
@@ -304,6 +306,8 @@ export default function Home() {
                 }) 
             );
             setNewItemName('');
+            const message = itemFromForm._id ? 'Item updated successfully' : 'Item created successfully';
+            toast.success(message);
         } catch (err) {
             toast.error(err.response.data.message);;
         }

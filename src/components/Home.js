@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, {useState, useEffect} from 'react';
 import api from '../api';
 import List from './lists/List';
@@ -76,6 +77,9 @@ export default function Home() {
     }
 
     async function deleteList(id) {
+        if (!confirm("Are you sure you want to delete this list?"))
+            return;
+
         if (!id) {
             setLists(oldLists => oldLists.slice(0, -1));
             return;
@@ -217,6 +221,9 @@ export default function Home() {
     }
 
     const itemOnDeleteHandler = async (listId, itemId) => {
+        if (!confirm("Are you sure you want to delete this item?"))
+            return;
+
         if(!itemId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)

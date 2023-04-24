@@ -41,3 +41,8 @@
 .text-decoration-line-through {
   text-decoration: line-through;
 }
+
+.pe-none {
+  pointer-events: none;
+  opacity: .1;
+}

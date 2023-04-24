@@ -51,7 +51,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                   />
                 )
               }
-              <div className='list-group-item'>
+              <div className={'list-group-item ' +  (checkIfObjEmpty(list?.items[list?.items?.length - 1])  ? 'pe-none' : '')}>
                 <span className='cursor-pointer d-flex align-items-center hoverable' onClick={(e) => addNewItemHandler(e, list._id)}>
                   <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "1.5rem" }} />
                   <strong>Add Item</strong>

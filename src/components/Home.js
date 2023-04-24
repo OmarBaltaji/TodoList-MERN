@@ -152,7 +152,10 @@ export default function Home() {
                 <div className='col-md-3 my-3'>
                     <div className='card shadow'>
                         <div className='card-body d-flex align-items-center justify-content-center my-5'>
-                            <span className='cursor-pointer d-flex align-items-center hoverable' onClick={addNewList}>
+                            <span 
+                                className={'cursor-pointer d-flex align-items-center hoverable ' +  (lists && lists.length > 0 && checkIfObjEmpty(lists[lists?.length - 1])  ? 'pe-none' : '')}  
+                                onClick={addNewList}
+                            >
                                 <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "2rem" }} />
                                 <strong>Add List</strong>
                             </span>
@@ -315,7 +318,7 @@ export default function Home() {
     const handleClickOutsideForm = (listId, item) => {
         if(!listId) 
             return;
-            
+
         if(item) 
             toggleItemForm(listId, item, false);
         else

@@ -9,12 +9,13 @@ export default function Form ({
   const formRef = useRef(null);
 
   const handleClickOutsideOfElement = (e) => {
-    if (formRef.current && !formRef.current.contains(e.target))
+    if (!formRef.current?.contains(e.target))
       handleClickOutsideForm(listId, item);
   }
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutsideOfElement);
+    formRef.current?.scrollIntoView({ behavior: 'smooth'});
     return () => document.removeEventListener('click', handleClickOutsideOfElement);
   }, []);
 

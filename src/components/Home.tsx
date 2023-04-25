@@ -70,8 +70,10 @@ const Home: React.FC = () => {
 
     async function getListItems(list: ListObject) {
         try {
-            const {data: {items}} = await api.getListItems(list._id);
-            list.items = items;
+            if(list._id) {
+                const {data: {items}} = await api.getListItems(list._id);
+                list.items = items;
+            }
             return list;
         } catch (err) {
             toast.error(err.response.data.message);;
@@ -131,7 +133,7 @@ const Home: React.FC = () => {
         }));
     }
 
-    function handleOnChange (e: React.ChangeEvent<HTMLInputElement>, listId: string) {
+    function handleOnChange (e: React.ChangeEvent<HTMLInputElement>, listId: string | undefined) {
         if (listId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)

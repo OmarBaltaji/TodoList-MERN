@@ -17,6 +17,11 @@ export interface ListResponse {
   list: ListObject
 }
 
+export interface AllListsResponse {
+  lists: ListObject[];
+  count: number;
+}
+
 export interface ListFormData {
   title: string;
 }
@@ -29,4 +34,9 @@ export interface ItemFormData {
 
 export interface ItemResponse {
   item: ItemObject
+}
+
+export interface AllItemsResponse {
+  items: ItemObject[];
+  count: number;
 }

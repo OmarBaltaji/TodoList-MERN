@@ -7,7 +7,8 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ListObject, ItemObject } from '../models';
+import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
+import { AxiosResponse } from 'axios';
 
 
 const Home: React.FC = () => {
@@ -19,32 +20,31 @@ const Home: React.FC = () => {
         getAllLists();
     }, []);
 
-    async function handleOnSubmit(e, listId: string) {
+    async function handleOnSubmit(e: React.FormEvent<EventTarget>, listId: string | null = null) {
         e.preventDefault();
         let formData = { title };
         if (listId) {
             const listToUpdate = lists.find((list: ListObject) => list._id === listId);
-            formData.title = listToUpdate.title;
+            formData.title = listToUpdate && listToUpdate.title ? listToUpdate.title : '';
         }
 
         try {
-            let data;
+            let response: AxiosResponse<ListResponse>;
             if (listId) {
-                data = await api.updateList(listId, formData);
+                response = await api.updateList(listId, formData);
             } else {
-                data = await api.createList(formData);
+                response = await api.createList(formData);
             }
 
             setLists(oldLists => {
                 if (listId) {
                     return oldLists.map((list: ListObject) => {
                         if(list._id === listId)
-                            list = {...list, showTitleForm: false, ...data.data.list};
+                            list = {...list, showTitleForm: false, ...response.data.list};
                         return list;
                     })
                 } else {
-                    const lastListIndex = [oldLists.length - 1];
-                    oldLists[lastListIndex] = data.data.list;
+                    oldLists[oldLists.length - 1] = response.data.list;
                     return oldLists;
                 }
             });
@@ -78,7 +78,7 @@ const Home: React.FC = () => {
         }
     }
 
-    async function deleteList(id: string | null | undefined = null) {
+    async function deleteList(id: string | null = null) {
         if (!confirm("Are you sure you want to delete this list?"))
             return;
 
@@ -88,7 +88,7 @@ const Home: React.FC = () => {
         }
 
         const list = lists.find((list: ListObject) => list._id === id);
-        if(list.items && list.items.length > 0) {
+        if(list && list.items && list.items.length > 0) {
             toast.error("Can't delete list before removing its related items");
             return;
         }
@@ -106,7 +106,7 @@ const Home: React.FC = () => {
         setLists(oldLists => [...oldLists, {}]);
     }
 
-    function handleKeyDown (e, listId: string | null = null) {
+    function handleKeyDown (e: React.KeyboardEvent, listId: string | null = null) {
         e.stopPropagation();
         if (e.key === 'Enter')
             handleOnSubmit(e, listId);
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
             toggleTitleForm(listId, false);
     }
 
-    function toggleTitleForm (listId: string, shouldShow: boolean) {
+    function toggleTitleForm (listId: string | null = null, shouldShow: boolean = false) {
         if (!listId) {
             deleteList();
             return;
@@ -131,7 +131,7 @@ const Home: React.FC = () => {
         }));
     }
 
-    function handleOnChange (e, listId: string) {
+    function handleOnChange (e: React.ChangeEvent<HTMLInputElement>, listId: string) {
         if (listId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)
@@ -200,19 +200,21 @@ const Home: React.FC = () => {
     }
 
     /* Items Handlers */
-    const itemOnCheckHandler = async (e, itemId) => {
+    const itemOnCheckHandler = async (e: React.ChangeEvent<HTMLInputElement>, itemId: string) => {
         const formData = { done: e.target.checked }
 
         try {
             const {data: {item: updatedItem}} = await api.updateItem(itemId, formData);
             setLists((oldLists) =>
                 oldLists.map((list: ListObject) => {
-                    list.items = list.items.map((item: ItemObject) => {
-                        if(item._id === itemId) {
-                            return { ...item, done: updatedItem.done };
-                        }
-                        return item;
-                    })
+                    if(list.items) {
+                        list.items = list.items.map((item: ItemObject) => {
+                            if(item._id === itemId) {
+                                return { ...item, done: updatedItem.done };
+                            }
+                            return item;
+                        })
+                    }
                     return list;
                 })
             );
@@ -225,7 +227,7 @@ const Home: React.FC = () => {
     const itemOnDeleteHandler = async (listId: string, itemId: string | null = null) => {
         if(!itemId) {
             setLists(oldLists => oldLists.map((list: ListObject) => {
-                if (list._id === listId)
+                if (list._id === listId && list.items)
                     list = {...list, items: list.items.slice(0, -1)}
                 return list;
             }));
@@ -237,7 +239,8 @@ const Home: React.FC = () => {
                 const {data: successMessage} = await api.deleteItem(itemId);
                 setLists(oldLists => 
                     oldLists.map((list: ListObject) => {
-                        list.items = list.items.filter((item: ItemObject) => item._id !== itemId);
+                        if (list.items)
+                            list.items = list.items.filter((item: ItemObject) => item._id !== itemId);
                         return list;
                     })
                 );
@@ -259,22 +262,24 @@ const Home: React.FC = () => {
         setLists(oldLists => 
             oldLists.map((list: ListObject) => {
                 if(list._id === listId) {
-                    const modifiedItems = list.items.map((item: ItemObject) => {
-                        if (item._id === itemFromForm._id)
-                            item.showNameForm = shouldShow;
-                        else
-                            item.showNameForm = false;
-                        
-                        return item;
-                    });
-                    list = {...list, items: [...modifiedItems]};
+                    if(list.items) {
+                        const modifiedItems = list.items.map((item: ItemObject) => {
+                            if (item._id === itemFromForm._id)
+                                item.showNameForm = shouldShow;
+                            else
+                                item.showNameForm = false;
+                            
+                            return item;
+                        });
+                        list = {...list, items: [...modifiedItems]};
+                    }
                 }
                 return list;
             })
         );
     }
     
-    const addNewItem = (e, listId: string) => {
+    const addNewItem = (listId: string) => {
         setLists(oldLists => (
             oldLists.map((list: ListObject) => {
                 if(list._id === listId) {
@@ -287,7 +292,7 @@ const Home: React.FC = () => {
         ));
     }
 
-    const itemOnSubmitHandler = async (e, listId: string, itemFromForm: ItemObject) => {
+    const itemOnSubmitHandler = async (e: React.FormEvent<EventTarget>, listId: string, itemFromForm: ItemObject) => {
         e.preventDefault();
 
         const formData = {
@@ -296,7 +301,7 @@ const Home: React.FC = () => {
         }
 
         try {
-            let data;
+            let data: AxiosResponse<ItemResponse>;
             if(itemFromForm._id)
                 data = await api.updateItem(itemFromForm._id, formData);
             else
@@ -304,7 +309,7 @@ const Home: React.FC = () => {
             
             setLists(oldLists => 
                 oldLists.map((list: ListObject) => {
-                    if(list._id === listId) {
+                    if(list._id === listId && list.items) {
                         if(itemFromForm._id) {
                             const modifiedListItems = list.items.map((item: ItemObject) => {
                                 if(item._id === itemFromForm._id)
@@ -328,11 +333,11 @@ const Home: React.FC = () => {
         }
     }
 
-    const itemOnChangeHandler = (e, listId: string, itemId: string) => {
+    const itemOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, listId: string, itemId: string) => {
         if (itemId) {
             setLists(oldLists => 
                 oldLists.map((list: ListObject) => {
-                    if(list._id === listId) {
+                    if(list._id === listId && list.items) {
                         const modifiedItems = list.items.map((item: ItemObject) => {
                             if(item._id === itemId)
                                 item.name = e.target.value
@@ -348,7 +353,7 @@ const Home: React.FC = () => {
         }
     }
 
-    const itemOnHandleKeyDown = (e, listId: string, item: ItemObject) => {
+    const itemOnHandleKeyDown = (e: React.KeyboardEvent, listId: string, item: ItemObject) => {
         if (e.key === 'Enter')
             itemOnSubmitHandler(e, listId, item);
         else if (e.key === 'Escape')

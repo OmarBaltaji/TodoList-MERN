@@ -4,13 +4,28 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Item from '../items/Item';
-import { ListObject } from '../../models';
+import { ListObject, ItemObject } from '../../models';
 
 interface Props {
   list: ListObject;
+  onDeleteHandler: (id: string | null) => void;
+  onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>, listId: string) => void;
+  titleValue: string;
+  onSubmitHandler: (e: React.FormEvent<EventTarget>, listId: string) => void;
+  handleKeyDown: (e: React.KeyboardEvent, listId: string) => void; 
+  handleShowTitleForm: (listId: string, shouldShow: boolean) => void;
+  itemOnChangeHandler: (e: React.ChangeEvent<HTMLInputElement>, listId: string, itemId: string) => void;
+  itemOnDeleteHandler: (listId: string, itemId: string | null) => void;
+  addNewItemHandler: (listId: string) => void;
+  itemOnSubmitHandler: (e: React.FormEvent<EventTarget>, listId: string, itemFromForm: ItemObject) => void;
+  itemOnCheckHandler: (e: React.ChangeEvent<HTMLInputElement>, itemId: string) => void;
+  itemNameValue: string;
+  itemOnHandleKeyDown: (e: React.KeyboardEvent, listId: string, item: ItemObject) => void;
+  handleShowItemNameForm: (listId: string, itemFromForm: ItemObject, shouldShow: boolean) => void;
+  handleClickOutsideForm: (listId: string, item: ItemObject) => void;
 }
 
-export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm, handleClickOutsideForm}) {
+const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm, handleClickOutsideForm}) => {
   const displayForm = (value, isEdit) => (
     <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} listId={list._id} handleClickOutsideForm={handleClickOutsideForm} />
   )
@@ -57,7 +72,7 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
                 )
               }
               <div className={'list-group-item ' +  (list.items && list.items.length > 0  && (checkIfObjEmpty(list?.items[list?.items?.length - 1]) || list.items.some(item => item.showNameForm))  ? 'pe-none' : '')}>
-                <span className='cursor-pointer d-flex align-items-center hoverable' onClick={(e) => addNewItemHandler(e, list._id)}>
+                <span className='cursor-pointer d-flex align-items-center hoverable' onClick={() => addNewItemHandler(list._id)}>
                   <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "1.5rem" }} />
                   <strong>Add Item</strong>
                 </span>
@@ -79,3 +94,5 @@ export default function List({list, onDeleteHandler, onChangeHandler, titleValue
     </div>
   );
 }
+
+export default List;

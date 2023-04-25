@@ -7,21 +7,23 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ListObject, ItemObject } from '../models';
 
-export default function Home() {
-    const [title, setTitle] = useState('');
-    const [lists, setLists] = useState([]);
-    const [newItemName, setNewItemName] = useState('');
+
+const Home: React.FC = () => {
+    const [title, setTitle] = useState<string>('');
+    const [lists, setLists] = useState<ListObject[]>([]);
+    const [newItemName, setNewItemName] = useState<string>('');
 
     useEffect(() => {
         getAllLists();
     }, []);
 
-    async function handleOnSubmit(e, listId) {
+    async function handleOnSubmit(e, listId: string) {
         e.preventDefault();
         let formData = { title };
         if (listId) {
-            const listToUpdate = lists.find(list => list._id === listId);
+            const listToUpdate = lists.find((list: ListObject) => list._id === listId);
             formData.title = listToUpdate.title;
         }
 
@@ -35,7 +37,7 @@ export default function Home() {
 
             setLists(oldLists => {
                 if (listId) {
-                    return oldLists.map(list => {
+                    return oldLists.map((list: ListObject) => {
                         if(list._id === listId)
                             list = {...list, showTitleForm: false, ...data.data.list};
                         return list;
@@ -57,7 +59,7 @@ export default function Home() {
     async function getAllLists() {
         try {
             const {data: {lists: fetchedLists}} = await api.getAllLists();
-            const modifiedFetchedLists = await Promise.all(fetchedLists.map(async list => {
+            const modifiedFetchedLists = await Promise.all(fetchedLists.map(async (list: ListObject) => {
                 return await getListItems(list);
             }));
             setLists(modifiedFetchedLists);
@@ -66,7 +68,7 @@ export default function Home() {
         }
     }
 
-    async function getListItems(list) {
+    async function getListItems(list: ListObject) {
         try {
             const {data: {items}} = await api.getListItems(list._id);
             list.items = items;
@@ -76,7 +78,7 @@ export default function Home() {
         }
     }
 
-    async function deleteList(id) {
+    async function deleteList(id: string | null | undefined = null) {
         if (!confirm("Are you sure you want to delete this list?"))
             return;
 
@@ -85,7 +87,7 @@ export default function Home() {
             return;
         }
 
-        const list = lists.find(list => list._id === id);
+        const list = lists.find((list: ListObject) => list._id === id);
         if(list.items && list.items.length > 0) {
             toast.error("Can't delete list before removing its related items");
             return;
@@ -93,7 +95,7 @@ export default function Home() {
 
         try {
             const {data: successMessage} = await api.deleteList(id);
-            setLists(oldLists => oldLists.filter(list => list._id !== id));
+            setLists(oldLists => oldLists.filter((list: ListObject) => list._id !== id));
             toast.success('List deleted successfully');
         } catch (err) {
             toast.error(err.response.data.message);;
@@ -104,7 +106,7 @@ export default function Home() {
         setLists(oldLists => [...oldLists, {}]);
     }
 
-    function handleKeyDown (e, listId = null) {
+    function handleKeyDown (e, listId: string | null = null) {
         e.stopPropagation();
         if (e.key === 'Enter')
             handleOnSubmit(e, listId);
@@ -112,7 +114,7 @@ export default function Home() {
             toggleTitleForm(listId, false);
     }
 
-    function toggleTitleForm (listId, shouldShow) {
+    function toggleTitleForm (listId: string, shouldShow: boolean) {
         if (!listId) {
             deleteList();
             return;
@@ -129,7 +131,7 @@ export default function Home() {
         }));
     }
 
-    function handleOnChange (e, listId) {
+    function handleOnChange (e, listId: string) {
         if (listId) {
             setLists(oldLists => oldLists.map(list => {
                 if (list._id === listId)
@@ -141,7 +143,7 @@ export default function Home() {
         }
     }
 
-    function handleClickOutsideForm (listId, item) {
+    function handleClickOutsideForm (listId: string, item: ItemObject) {
         if(!listId) 
             return;
 
@@ -159,7 +161,7 @@ export default function Home() {
     function displayAllLists() {
         return(
             <div className='row col-md-12 px-5'>
-                {lists.map((list) => (
+                {lists.map((list: ListObject) => (
                     <List 
                         key={list._id ?? "new-list-key"} 
                         list={list} 
@@ -203,9 +205,9 @@ export default function Home() {
 
         try {
             const {data: {item: updatedItem}} = await api.updateItem(itemId, formData);
-            setLists(oldLists =>
-                oldLists.map(list => {
-                    list.items = list.items.map(item => {
+            setLists((oldLists) =>
+                oldLists.map((list: ListObject) => {
+                    list.items = list.items.map((item: ItemObject) => {
                         if(item._id === itemId) {
                             return { ...item, done: updatedItem.done };
                         }
@@ -220,9 +222,9 @@ export default function Home() {
         }
     }
 
-    const itemOnDeleteHandler = async (listId, itemId) => {
+    const itemOnDeleteHandler = async (listId: string, itemId: string | null = null) => {
         if(!itemId) {
-            setLists(oldLists => oldLists.map(list => {
+            setLists(oldLists => oldLists.map((list: ListObject) => {
                 if (list._id === listId)
                     list = {...list, items: list.items.slice(0, -1)}
                 return list;
@@ -234,8 +236,8 @@ export default function Home() {
             try {
                 const {data: successMessage} = await api.deleteItem(itemId);
                 setLists(oldLists => 
-                    oldLists.map(list => {
-                        list.items = list.items.filter(item => item._id !== itemId);
+                    oldLists.map((list: ListObject) => {
+                        list.items = list.items.filter((item: ItemObject) => item._id !== itemId);
                         return list;
                     })
                 );
@@ -246,7 +248,7 @@ export default function Home() {
         }
     }
 
-    const toggleItemForm = (listId, itemFromForm, shouldShow) => {
+    const toggleItemForm = (listId: string, itemFromForm: ItemObject, shouldShow: boolean) => {
         if (!itemFromForm._id) {
             itemOnDeleteHandler(listId);
             return;
@@ -255,9 +257,9 @@ export default function Home() {
         }
 
         setLists(oldLists => 
-            oldLists.map(list => {
+            oldLists.map((list: ListObject) => {
                 if(list._id === listId) {
-                    const modifiedItems = list.items.map(item => {
+                    const modifiedItems = list.items.map((item: ItemObject) => {
                         if (item._id === itemFromForm._id)
                             item.showNameForm = shouldShow;
                         else
@@ -272,9 +274,9 @@ export default function Home() {
         );
     }
     
-    const addNewItem = (e, listId) => {
+    const addNewItem = (e, listId: string) => {
         setLists(oldLists => (
-            oldLists.map(list => {
+            oldLists.map((list: ListObject) => {
                 if(list._id === listId) {
                     if(!list.items) 
                         list.items = [];
@@ -285,7 +287,7 @@ export default function Home() {
         ));
     }
 
-    const itemOnSubmitHandler = async (e, listId, itemFromForm) => {
+    const itemOnSubmitHandler = async (e, listId: string, itemFromForm: ItemObject) => {
         e.preventDefault();
 
         const formData = {
@@ -301,10 +303,10 @@ export default function Home() {
                 data = await api.createItem(formData);
             
             setLists(oldLists => 
-                oldLists.map(list => {
+                oldLists.map((list: ListObject) => {
                     if(list._id === listId) {
                         if(itemFromForm._id) {
-                            const modifiedListItems = list.items.map(item => {
+                            const modifiedListItems = list.items.map((item: ItemObject) => {
                                 if(item._id === itemFromForm._id)
                                     item = data.data.item;
                                 return item;
@@ -326,12 +328,12 @@ export default function Home() {
         }
     }
 
-    const itemOnChangeHandler = (e, listId, itemId) => {
+    const itemOnChangeHandler = (e, listId: string, itemId: string) => {
         if (itemId) {
             setLists(oldLists => 
-                oldLists.map(list => {
+                oldLists.map((list: ListObject) => {
                     if(list._id === listId) {
-                        const modifiedItems = list.items.map(item => {
+                        const modifiedItems = list.items.map((item: ItemObject) => {
                             if(item._id === itemId)
                                 item.name = e.target.value
                             return item;
@@ -346,7 +348,7 @@ export default function Home() {
         }
     }
 
-    const itemOnHandleKeyDown = (e, listId, item) => {
+    const itemOnHandleKeyDown = (e, listId: string, item: ItemObject) => {
         if (e.key === 'Enter')
             itemOnSubmitHandler(e, listId, item);
         else if (e.key === 'Escape')
@@ -363,3 +365,5 @@ export default function Home() {
         </>
     );
 }
+
+export default Home;

@@ -4,6 +4,11 @@ import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Item from '../items/Item';
+import { ListObject } from '../../models';
+
+interface Props {
+  list: ListObject;
+}
 
 export default function List({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm, handleClickOutsideForm}) {
   const displayForm = (value, isEdit) => (

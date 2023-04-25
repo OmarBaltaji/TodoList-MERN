@@ -62,7 +62,7 @@ const Home: React.FC = () => {
             const modifiedFetchedLists = await Promise.all(fetchedLists.map(async (list: ListObject) => {
                 return await getListItems(list);
             }));
-            setLists(modifiedFetchedLists);
+            setLists(modifiedFetchedLists as ListObject[]);
         } catch (err) {
             toast.error(err.response.data.message);
         }

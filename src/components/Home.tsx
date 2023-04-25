@@ -98,7 +98,7 @@ const Home: React.FC = () => {
         try {
             const {data: successMessage} = await api.deleteList(id);
             setLists(oldLists => oldLists.filter((list: ListObject) => list._id !== id));
-            toast.success('List deleted successfully');
+            toast.success(successMessage);
         } catch (err) {
             toast.error(err.response.data.message);;
         }
@@ -246,7 +246,7 @@ const Home: React.FC = () => {
                         return list;
                     })
                 );
-                toast.success('Item deleted successfully');
+                toast.success(successMessage);
             } catch (err) {
                 toast.error(err.response.data.message);;
             }

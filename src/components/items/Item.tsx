@@ -3,8 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../../utilities';
 import Form from '../common/Form';
+import { ItemObject } from '../../models';
 
-export default function Item ({item, listId, onChangeHandler, onDeleteHandler, onSubmitHandler, handleKeyDown, onCheckHandler, itemNameValue, handleShowItemNameForm, handleClickOutsideForm}) {  
+interface Props {
+  item: ItemObject;
+  listId: string | undefined; 
+  onChangeHandler: React.ChangeEventHandler<HTMLInputElement>; 
+  onDeleteHandler: React.MouseEventHandler<SVGSVGElement>; 
+  onSubmitHandler: React.MouseEventHandler<HTMLButtonElement>; 
+  handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
+  onCheckHandler: React.ChangeEventHandler<HTMLInputElement>;
+  itemNameValue: string;
+  handleShowItemNameForm: React.MouseEventHandler<HTMLSpanElement>;
+  handleClickOutsideForm: (listId: string | undefined, item: ItemObject | undefined) => void;
+}
+
+const Item: React.FC<Props> = ({item, listId, onChangeHandler, onDeleteHandler, onSubmitHandler, handleKeyDown, onCheckHandler, itemNameValue, handleShowItemNameForm, handleClickOutsideForm}) => {  
   const displayForm = (isEdit = false) => (
     <Form handleOnChange={onChangeHandler} value={itemNameValue} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} handleClickOutsideForm={handleClickOutsideForm} item={item} listId={listId} />
   )
@@ -31,3 +45,5 @@ export default function Item ({item, listId, onChangeHandler, onDeleteHandler, o
     </div>
   )
 }
+
+export default Item;

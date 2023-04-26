@@ -145,7 +145,7 @@ const Home: React.FC = () => {
         }
     }
 
-    function handleClickOutsideForm (listId: string, item: ItemObject) {
+    function handleClickOutsideForm (listId: string | undefined, item: ItemObject | undefined) {
         if(!listId) 
             return;
 
@@ -226,7 +226,7 @@ const Home: React.FC = () => {
         }
     }
 
-    const itemOnDeleteHandler = async (listId: string, itemId: string | null = null) => {
+    const itemOnDeleteHandler = async (listId: string | undefined, itemId: string | null = null) => {
         if(!itemId) {
             setLists(oldLists => oldLists.map((list: ListObject) => {
                 if (list._id === listId && list.items)
@@ -253,7 +253,7 @@ const Home: React.FC = () => {
         }
     }
 
-    const toggleItemForm = (listId: string, itemFromForm: ItemObject, shouldShow: boolean) => {
+    const toggleItemForm = (listId: string | undefined, itemFromForm: ItemObject, shouldShow: boolean) => {
         if (!itemFromForm._id) {
             itemOnDeleteHandler(listId);
             return;
@@ -281,7 +281,7 @@ const Home: React.FC = () => {
         );
     }
     
-    const addNewItem = (listId: string) => {
+    const addNewItem = (listId: string | undefined) => {
         setLists(oldLists => (
             oldLists.map((list: ListObject) => {
                 if(list._id === listId) {
@@ -294,7 +294,7 @@ const Home: React.FC = () => {
         ));
     }
 
-    const itemOnSubmitHandler = async (e: React.FormEvent<EventTarget>, listId: string, itemFromForm: ItemObject) => {
+    const itemOnSubmitHandler = async (e: React.FormEvent<EventTarget>, listId: string | undefined, itemFromForm: ItemObject) => {
         e.preventDefault();
 
         const formData = {
@@ -335,7 +335,7 @@ const Home: React.FC = () => {
         }
     }
 
-    const itemOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, listId: string, itemId: string) => {
+    const itemOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, listId: string | undefined, itemId: string | undefined) => {
         if (itemId) {
             setLists(oldLists => 
                 oldLists.map((list: ListObject) => {
@@ -356,10 +356,12 @@ const Home: React.FC = () => {
     }
 
     const itemOnHandleKeyDown = (e: React.KeyboardEvent, listId: string, item: ItemObject) => {
-        if (e.key === 'Enter')
-            itemOnSubmitHandler(e, listId, item);
-        else if (e.key === 'Escape')
-            toggleItemForm(listId, item, false);
+        if(listId) {
+            if (e.key === 'Enter')
+                itemOnSubmitHandler(e, listId, item);
+            else if (e.key === 'Escape')
+                toggleItemForm(listId, item, false);
+        }
     }
 
     return (

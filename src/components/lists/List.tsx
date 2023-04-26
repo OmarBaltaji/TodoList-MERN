@@ -8,25 +8,25 @@ import { ListObject, ItemObject } from '../../models';
 
 interface Props {
   list: ListObject;
-  onDeleteHandler: (id: string | null) => void;
-  onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>, listId: string) => void;
+  onDeleteHandler: React.MouseEventHandler<SVGSVGElement>;
+  onChangeHandler: React.ChangeEventHandler<HTMLInputElement>;
   titleValue: string;
-  onSubmitHandler: (e: React.FormEvent<EventTarget>, listId: string) => void;
-  handleKeyDown: (e: React.KeyboardEvent, listId: string) => void; 
-  handleShowTitleForm: (listId: string, shouldShow: boolean) => void;
-  itemOnChangeHandler: (e: React.ChangeEvent<HTMLInputElement>, listId: string, itemId: string) => void;
-  itemOnDeleteHandler: (listId: string, itemId: string | null) => void;
-  addNewItemHandler: (listId: string) => void;
-  itemOnSubmitHandler: (e: React.FormEvent<EventTarget>, listId: string, itemFromForm: ItemObject) => void;
-  itemOnCheckHandler: (e: React.ChangeEvent<HTMLInputElement>, itemId: string) => void;
+  onSubmitHandler: React.MouseEventHandler<HTMLButtonElement>;
+  handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>; 
+  handleShowTitleForm: React.MouseEventHandler<HTMLDivElement>;
+  itemOnChangeHandler: (e: React.ChangeEvent<HTMLInputElement>, listId: string | undefined, itemId: string | undefined) => void;
+  itemOnDeleteHandler: (listId: string | undefined, itemId: string | undefined) => void;
+  addNewItemHandler: (listId: string | undefined) => void;
+  itemOnSubmitHandler: (e: React.FormEvent<EventTarget>, listId: string | undefined, itemFromForm: ItemObject) => void;
+  itemOnCheckHandler: (e: React.ChangeEvent<HTMLInputElement>, itemId: string | undefined) => void;
   itemNameValue: string;
-  itemOnHandleKeyDown: (e: React.KeyboardEvent, listId: string, item: ItemObject) => void;
-  handleShowItemNameForm: (listId: string, itemFromForm: ItemObject, shouldShow: boolean) => void;
-  handleClickOutsideForm: (listId: string, item: ItemObject) => void;
+  itemOnHandleKeyDown: (e: React.KeyboardEvent, listId: string | undefined, item: ItemObject) => void;
+  handleShowItemNameForm: (listId: string | undefined, itemFromForm: ItemObject, shouldShow: boolean) => void;
+  handleClickOutsideForm: (listId: string | undefined, item: ItemObject | undefined) => void;
 }
 
 const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleValue, onSubmitHandler, handleKeyDown, handleShowTitleForm, itemOnChangeHandler, itemOnDeleteHandler, addNewItemHandler, itemOnSubmitHandler, itemOnCheckHandler, itemNameValue, itemOnHandleKeyDown, handleShowItemNameForm, handleClickOutsideForm}) => {
-  const displayForm = (value, isEdit) => (
+  const displayForm = (value: string | undefined, isEdit: boolean) => (
     <Form handleOnChange={onChangeHandler} value={value} handleOnSubmit={onSubmitHandler} handleKeyDown={handleKeyDown} isEdit={isEdit} listId={list._id} handleClickOutsideForm={handleClickOutsideForm} />
   )
 
@@ -38,7 +38,7 @@ const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleVal
     </div>
   );
 
-  const displayEditTitleForm = (list) => (
+  const displayEditTitleForm = (list: ListObject) => (
     displayForm(list.title, true)
   )
 
@@ -55,15 +55,15 @@ const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleVal
         <div className='card-text'>
           <ul className="list-group">
               {list.items && list.items.length > 0 && 
-                list.items.map(item => 
+                list.items.map((item: ItemObject) => 
                   <Item 
                     item={item} 
                     listId = {list._id}
-                    onChangeHandler={(e) => itemOnChangeHandler(e, list._id, item._id)} 
+                    onChangeHandler={(e: React.ChangeEvent<HTMLInputElement>) => itemOnChangeHandler(e, list._id, item._id)} 
                     onDeleteHandler={() => itemOnDeleteHandler(list._id, item._id)} 
-                    onCheckHandler={(e) => itemOnCheckHandler(e, item._id)}
-                    onSubmitHandler={(e) => itemOnSubmitHandler(e, list._id, item)}
-                    handleKeyDown={(e) => itemOnHandleKeyDown(e, list._id, item)}
+                    onCheckHandler={(e: React.ChangeEvent<HTMLInputElement>) => itemOnCheckHandler(e, item._id)}
+                    onSubmitHandler={(e: React.FormEvent<EventTarget>) => itemOnSubmitHandler(e, list._id, item)}
+                    handleKeyDown={(e: React.KeyboardEvent) => itemOnHandleKeyDown(e, list._id, item)}
                     handleShowItemNameForm={() => handleShowItemNameForm(list._id, item, true)}
                     handleClickOutsideForm={handleClickOutsideForm}
                     key={item._id ?? 'newly-added-item'}   

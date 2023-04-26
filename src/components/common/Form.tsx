@@ -21,7 +21,7 @@ const Form: React.FC <Props> = ({
 }) => {
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleClickOutsideOfElement = (e) => {
+  const handleClickOutsideOfElement = (e: any) => {
     if (!formRef.current?.contains(e.target) && typeof handleClickOutsideForm === 'function')
       handleClickOutsideForm(listId, item);
   }

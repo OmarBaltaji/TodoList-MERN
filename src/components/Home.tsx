@@ -81,13 +81,13 @@ const Home: React.FC = () => {
     }
 
     async function deleteList(id: string | null = null) {
-        if (!confirm("Are you sure you want to delete this list?"))
-            return;
-
         if (!id) {
             setLists(oldLists => oldLists.slice(0, -1));
             return;
         }
+
+        if (!confirm("Are you sure you want to delete this list?"))
+            return;
 
         const list = lists.find((list: ListObject) => list._id === id);
         if(list && list.items && list.items.length > 0) {

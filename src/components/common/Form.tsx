@@ -4,7 +4,7 @@ import '../../styles/css/main.css';
 import { ItemObject } from '../../models';
 
 interface Props {
-  handleOnSubmit: (e: React.FormEvent<EventTarget>, listId: string | undefined, item: ItemObject) => void;
+  handleOnSubmit: React.MouseEventHandler<HTMLButtonElement>;
   value: string | undefined;
   handleOnChange: React.ChangeEventHandler<HTMLInputElement>;
   handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>;

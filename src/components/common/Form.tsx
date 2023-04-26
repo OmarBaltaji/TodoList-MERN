@@ -1,15 +1,28 @@
 import React, { useRef, useEffect } from 'react';
 import Button from './Button';
 import '../../styles/css/main.css';
+import { ItemObject } from '../../models';
 
-export default function Form ({
+interface Props {
+  handleOnSubmit: (e: React.FormEvent<EventTarget>, listId: string | undefined, item: ItemObject) => void;
+  value: string | undefined;
+  handleOnChange: React.ChangeEventHandler<HTMLInputElement>;
+  handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
+  isEdit: boolean;
+  inputPlaceholder?: string;
+  listId?: string | undefined;
+  item?: ItemObject;
+  handleClickOutsideForm?: (listId: string | undefined, item: ItemObject | undefined) => void;
+}
+
+const Form: React.FC <Props> = ({
   handleOnSubmit, value, handleOnChange, handleKeyDown, isEdit = false, 
-  inputPlaceholder = "Please enter a title for your list", listId = null, item = null, handleClickOutsideForm = null
-}) {
-  const formRef = useRef(null);
+  inputPlaceholder = "Please enter a title for your list", listId, item, handleClickOutsideForm
+}) => {
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleClickOutsideOfElement = (e) => {
-    if (!formRef.current?.contains(e.target))
+    if (!formRef.current?.contains(e.target) && typeof handleClickOutsideForm === 'function')
       handleClickOutsideForm(listId, item);
   }
 
@@ -43,3 +56,5 @@ export default function Form ({
     </form>
   )
 }
+
+export default Form;

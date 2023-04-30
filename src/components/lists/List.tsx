@@ -2,9 +2,10 @@ import React from 'react';
 import {checkIfObjEmpty} from '../../utilities';
 import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Item from '../items/Item';
 import { ListObject, ItemObject } from '../../models';
+import AddEmptyItem from '../items/AddEmptyItem';
 
 interface Props {
   list: ListObject;
@@ -81,12 +82,7 @@ const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleVal
                   />
                 )
               }
-              <div className={'list-group-item ' +  (list.items && list.items.length > 0  && (checkIfObjEmpty(list?.items[list?.items?.length - 1]) || list.items.some(item => item.showNameForm))  ? 'pe-none' : '')}>
-                <span className='cursor-pointer d-flex align-items-center hoverable' onClick={() => addNewItemHandler(list._id)}>
-                  <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "1.5rem" }} />
-                  <strong>Add Item</strong>
-                </span>
-              </div>
+              <AddEmptyItem list={list} addNewItemHandler={addNewItemHandler} />
             </ul>
         </div>
       </>

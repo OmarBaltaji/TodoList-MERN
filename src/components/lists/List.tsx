@@ -3,9 +3,8 @@ import {checkIfObjEmpty} from '../../utilities';
 import Form from '../common/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import Item from '../items/Item';
 import { ListObject, ItemObject } from '../../models';
-import AddEmptyItem from '../items/AddEmptyItem';
+import ExistingList from './ExistingList';
 
 interface Props {
   list: ListObject;
@@ -53,49 +52,20 @@ const List: React.FC<Props> = ({list, onDeleteHandler, onChangeHandler, titleVal
       itemOnHandleKeyDown(e, listId, item)
   }
 
-  const displayExistingList = () => {
-    return (
-      <>
-        <div 
-          className='card-title d-flex justify-content-center text-dark h-100 my-5' 
-          onClick={handleShowTitleForm} 
-          onKeyDown={handleKeyDown}
-        >
-          {list.showTitleForm ? displayEditTitleForm(list) : <span title='Edit' className='card-title-text hoverable cursor-pointer'>{list.title}</span>}
-        </div>
-        <div className='card-text'>
-          <ul className="list-group">
-              {list.items && list.items.length > 0 && 
-                list.items.map((item: ItemObject) => 
-                  <Item 
-                    item={item} 
-                    listId = {list._id}
-                    onChangeHandler={(e: React.ChangeEvent<HTMLInputElement>) => itemOnChangeHandler(e, list._id, item._id)} 
-                    onDeleteHandler={() => itemOnDeleteHandler(list._id, item._id ?? null)} 
-                    onCheckHandler={(e: React.ChangeEvent<HTMLInputElement>) => checkItemHandler(e, item._id)}
-                    onSubmitHandler={(e: React.FormEvent<EventTarget>) => itemOnSubmitHandler(e, list._id, item)}
-                    handleKeyDown={(e: React.KeyboardEvent) => keyDownItemHandler(e, list._id, item)}
-                    handleShowItemNameForm={() => handleShowItemNameForm(list._id, item, true)}
-                    handleClickOutsideForm={handleClickOutsideForm}
-                    key={item._id ?? 'newly-added-item'}   
-                    itemNameValue={item.name ?? itemNameValue}
-                  />
-                )
-              }
-              <AddEmptyItem list={list} addNewItemHandler={addNewItemHandler} />
-            </ul>
-        </div>
-      </>
-    )
-  }
-
   return (
     <div className='col-md-3 my-3'>
       <div className={'card shadow ' + (list.items && list.items.length > 4 ? 'scrollable' : '')}>
         <div className='card--header position-relative text-danger'>
           <FontAwesomeIcon className='position-absolute delete-icon cursor-pointer hoverable' icon={faTrashCan} onClick={onDeleteHandler} />
         </div>
-        {checkIfObjEmpty(list) ? displayEmptyListForm() : displayExistingList()}
+        {checkIfObjEmpty(list) ? displayEmptyListForm() : 
+          <ExistingList list={list} itemOnChangeHandler={itemOnChangeHandler} itemOnDeleteHandler={itemOnDeleteHandler} 
+            itemOnSubmitHandler={itemOnSubmitHandler} handleShowItemNameForm={handleShowItemNameForm} handleKeyDown={handleKeyDown} 
+            handleShowTitleForm={handleShowTitleForm} checkItemHandler={checkItemHandler} keyDownItemHandler={keyDownItemHandler} 
+            displayEditTitleForm={displayEditTitleForm} handleClickOutsideForm={handleClickOutsideForm} itemNameValue={itemNameValue} 
+            addNewItemHandler={addNewItemHandler}
+          />
+        }
       </div>
     </div>
   );

@@ -2,13 +2,12 @@
 import React, {useState, useEffect} from 'react';
 import api from '../api';
 import List from './lists/List';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { checkIfObjEmpty } from '../utilities';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
 import { AxiosResponse } from 'axios';
+import AddEmptyList from './lists/AddEmptyList';
 
 
 const Home: React.FC = () => {
@@ -184,19 +183,7 @@ const Home: React.FC = () => {
                         handleClickOutsideForm={handleClickOutsideForm}
                     />
                 ))}
-                <div className='col-md-3 my-3'>
-                    <div className='card shadow'>
-                        <div className='card-body d-flex align-items-center justify-content-center my-5'>
-                            <span 
-                                className={'cursor-pointer d-flex align-items-center hoverable ' +  (lists && lists.length > 0 && checkIfObjEmpty(lists[lists?.length - 1])  ? 'pe-none' : '')}  
-                                onClick={addNewList}
-                            >
-                                <FontAwesomeIcon className='mr-2' icon={faCirclePlus} style={{ fontSize: "2rem" }} />
-                                <strong>Add List</strong>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <AddEmptyList lists={lists} addNewList={addNewList} />
             </div>
         );
     }

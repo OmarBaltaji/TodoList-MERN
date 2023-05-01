@@ -1,6 +1,7 @@
 const todoItem = require('../models/todoitem.model');
 const {StatusCodes} = require('http-status-codes');
 const { BadRequestError, NotFoundError } = require('../errors');
+const todoList = require('../models/todolist.model');
 
 const getAllItems = async (req, res) => {
   const listId = req.body.listId;
@@ -24,7 +25,14 @@ const createItem = async (req, res) => {
     throw new BadRequestError("Can't add an item without associating it to an existing list");
   }
 
-  const item = await todoItem.create({name, listId});
+  const item = await todoItem.create({name});
+  
+  await todoList.findByIdAndUpdate(
+    { _id: listId },
+    { $push: { items: item._id } },
+    { runValidators: true }
+  );
+
   res.status(StatusCodes.CREATED).json({ item });
 }
 

@@ -9,6 +9,11 @@ const todoListSchema = new Schema({
           trim: true,
           unique: true,
       },
+      items: [{
+        type: Schema.Types.ObjectId,
+        ref: 'todoItem',
+        select: false
+      }]
     },{
         timestamps: true,
 });

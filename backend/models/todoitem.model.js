@@ -13,10 +13,6 @@ const todoItemSchema = new Schema({
             type: Boolean,
             default: false,
         },
-        listId: {
-            type: ObjectId,
-            ref: 'todoList',
-        }
     },{
         timestamps: true,
 });

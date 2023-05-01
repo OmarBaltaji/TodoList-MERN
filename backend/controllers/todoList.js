@@ -3,7 +3,7 @@ const todoList = require('../models/todolist.model');
 const { StatusCodes } = require('http-status-codes');
 
 const getAllLists = async (req, res) => {
-  const lists = await todoList.find();
+  const lists = await todoList.find().populate('items');
   return res.status(StatusCodes.OK).json({count: lists.length, lists});
 }
 
@@ -20,7 +20,7 @@ const createList = async (req, res) => {
  
 const getList = async (req, res) => {
   const {params: {id: listId}} = req;
-  const list = await todoList.findById(listId);
+  const list = await todoList.findById(listId).populate('items');
 
   if(!list) {
     throw new NotFoundError(`List with id ${listId} does not exist`);
@@ -47,7 +47,7 @@ const updateList = async (req, res) => {
     {_id: listId},
     { title }, 
     { runValidators: true, new: true }
-  );
+  ).populate('items');
 
   if(!list) {
     throw new NotFoundError(`List with id ${listId} does not exist`);

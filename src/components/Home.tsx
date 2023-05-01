@@ -58,24 +58,9 @@ const Home: React.FC = () => {
     async function getAllLists() {
         try {
             const {data: {lists: fetchedLists}} = await api.getAllLists();
-            const modifiedFetchedLists = await Promise.all(fetchedLists.map(async (list: ListObject) => {
-                return await getListItems(list);
-            }));
-            setLists(modifiedFetchedLists as ListObject[]);
+            setLists(fetchedLists);
         } catch (err) {
             toast.error(err.response.data.message);
-        }
-    }
-
-    async function getListItems(list: ListObject) {
-        try {
-            if(list._id) {
-                const {data: {items}} = await api.getListItems(list._id);
-                list.items = items;
-            }
-            return list;
-        } catch (err) {
-            toast.error(err.response.data.message);;
         }
     }
 

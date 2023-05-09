@@ -70,14 +70,8 @@ const Home: React.FC = () => {
             return;
         }
 
-        if (!confirm("Are you sure you want to delete this list?"))
+        if (!confirm("Are you sure you want to delete this list? All related items will be removed as well"))
             return;
-
-        const list = lists.find((list: ListObject) => list._id === id);
-        if(list && list.items && list.items.length > 0) {
-            toast.error("Can't delete list before removing its related items");
-            return;
-        }
 
         try {
             const {data: successMessage} = await api.deleteList(id);

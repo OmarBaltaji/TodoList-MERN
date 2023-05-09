@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from "axios";
 import { ListFormData, ItemFormData, AllListsResponse, ListResponse, AllItemsResponse, ItemResponse } from './models';
-const baseUrl = process.env.REACT_APP_BASE_URL;
+const baseUrl = process.env.REACT_APP_BASE_URL ?? 'http://localhost:5000/';
 const itemApiUrl = baseUrl + 'api/v1/items/';
 const listApiUrl = baseUrl + 'api/v1/lists/';
 

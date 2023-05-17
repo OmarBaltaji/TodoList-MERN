@@ -1,12 +1,10 @@
 /* eslint-disable no-restricted-globals */
 import React, {useState, useEffect} from 'react';
-import api from '../api';
 import List from './lists/List';
 import { checkIfObjEmpty } from '../utilities';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
-import { AxiosResponse } from 'axios';
 import AddEmptyList from './lists/AddEmptyList';
 import { GET_LISTS } from '../graphql/queries';
 import { useQuery, useMutation } from '@apollo/client';

@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
 import AddEmptyList from './lists/AddEmptyList';
 import { GET_LISTS } from '../graphql/queries';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, FetchResult } from '@apollo/client';
 import { CREATE_LIST, DELETE_LIST, UPDATE_LIST, CREATE_ITEM, UPDATE_ITEM, DELETE_ITEM } from '../graphql/mutations';
 import { CreateItemDto, ListDto, EditItemDto } from '../graphql/input.type';
 
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
         }
 
         try {
-            let response: any;
+            let response: FetchResult<any>;
             if (listId)
                 response = await updateListMutation({ variables: { id: listId, dto: formData } });
             else
@@ -281,7 +281,7 @@ const Home: React.FC = () => {
         }
 
         try {
-            let response: any;
+            let response: FetchResult<any>;
             if(itemFromForm._id)
                 response = await updateItemMutation({ variables: {id: itemFromForm._id, dto: formData} });
             else

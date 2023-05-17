@@ -10,8 +10,8 @@ import { AxiosResponse } from 'axios';
 import AddEmptyList from './lists/AddEmptyList';
 import { GET_LISTS } from '../graphql/queries';
 import { useQuery, useMutation } from '@apollo/client';
-import { CREATE_LIST, DELETE_LIST, UPDATE_LIST } from '../graphql/mutations';
-import { ListDto } from '../graphql/input.type';
+import { CREATE_LIST, DELETE_LIST, UPDATE_LIST, CREATE_ITEM, UPDATE_ITEM, DELETE_ITEM } from '../graphql/mutations';
+import { CreateItemDto, ListDto, EditItemDto } from '../graphql/input.type';
 
 const Home: React.FC = () => {
     const [title, setTitle] = useState<string>('');
@@ -20,6 +20,9 @@ const Home: React.FC = () => {
     const [createListMutation, {}] = useMutation(CREATE_LIST);
     const [updateListMutation, {}] = useMutation(UPDATE_LIST);
     const [deleteListMutation, {}] = useMutation(DELETE_LIST);
+    const [createItemMutation, {}] = useMutation(CREATE_ITEM);
+    const [updateItemMutation, {}] = useMutation(UPDATE_ITEM);
+    const [deleteItemMutation, {}] = useMutation(DELETE_ITEM);
     const { loading: loadingLists, error: listsError, data: listsData } = useQuery(GET_LISTS);
 
 
@@ -63,18 +66,10 @@ const Home: React.FC = () => {
             const toastMessage = listId ? 'List updated successfully' : 'List created successfully';
             toast.success(toastMessage);
         } catch (err) {
-            toast.error(err.response.data.message);
+            console.error(err);
+            // toast.error(err.response.data.message);
         }
     }
-
-    // async function getAllLists() {
-    //     try {
-    //         const {data: {lists: fetchedLists}} = await api.getAllLists();
-    //         setLists(fetchedLists);
-    //     } catch (err) {
-    //         toast.error(err.response.data.message);
-    //     }
-    // }
 
     async function deleteList(id: string | null = null) {
         if (!id) {
@@ -183,26 +178,28 @@ const Home: React.FC = () => {
 
     /* Items Handlers */
     const itemOnCheckHandler = async (e: React.ChangeEvent<HTMLInputElement>, itemId: string) => {
-        const formData = { done: e.target.checked }
+        const formData: EditItemDto = { done: e.target.checked }
 
         try {
-            const {data: {item: updatedItem}} = await api.updateItem(itemId, formData);
+            const { data: { updateItem: {  item: updatedItem } } } = await updateItemMutation({ variables: { id: itemId, dto: formData } });
             setLists((oldLists) =>
                 oldLists.map((list: ListObject) => {
-                    if(list.items) {
-                        list.items = list.items.map((item: ItemObject) => {
+                    const modifiedList = { ...list };
+                    if(modifiedList.items) {
+                        modifiedList.items = modifiedList.items.map((item: ItemObject) => {
                             if(item._id === itemId) {
                                 return { ...item, done: updatedItem.done };
                             }
                             return item;
                         })
                     }
-                    return list;
+                    return modifiedList;
                 })
             );
             toast.success('Item updated successfully');
         } catch (err) {
-            toast.error(err.response.data.message);;
+            console.error(err);
+            // toast.error(err.response.data.message);;
         }
     }
 
@@ -218,17 +215,19 @@ const Home: React.FC = () => {
                 return;
 
             try {
-                const {data: successMessage} = await api.deleteItem(itemId);
+                const {data: {deleteItem: successMessage}} = await deleteItemMutation({ variables: { id: itemId } });
                 setLists(oldLists => 
                     oldLists.map((list: ListObject) => {
-                        if (list.items)
-                            list.items = list.items.filter((item: ItemObject) => item._id !== itemId);
-                        return list;
+                        const modifiedList = { ...list };
+                        if (modifiedList.items)
+                            modifiedList.items = modifiedList.items.filter((item: ItemObject) => item._id !== itemId);
+                        return modifiedList;
                     })
                 );
                 toast.success(successMessage);
             } catch (err) {
-                toast.error(err.response.data.message);;
+                console.error(err);
+                // toast.error(err.response.data.message);;
             }
         }
     }
@@ -246,12 +245,13 @@ const Home: React.FC = () => {
                 if(list._id === listId) {
                     if(list.items) {
                         const modifiedItems = list.items.map((item: ItemObject) => {
+                            const modifiedItem = { ...item };
                             if (item._id === itemFromForm._id)
-                                item.showNameForm = shouldShow;
+                                modifiedItem.showNameForm = shouldShow;
                             else
-                                item.showNameForm = false;
+                                modifiedItem.showNameForm = false;
                             
-                            return item;
+                            return modifiedItem;
                         });
                         list = {...list, items: [...modifiedItems]};
                     }
@@ -277,17 +277,17 @@ const Home: React.FC = () => {
     const itemOnSubmitHandler = async (e: React.FormEvent<EventTarget>, listId: string | undefined, itemFromForm: ItemObject) => {
         e.preventDefault();
 
-        const formData = {
+        const formData: CreateItemDto | EditItemDto = {
             "name":  itemFromForm.name ?? newItemName,
             "listId": listId,
         }
 
         try {
-            let data: AxiosResponse<ItemResponse>;
+            let response: any;
             if(itemFromForm._id)
-                data = await api.updateItem(itemFromForm._id, formData);
+                response = await updateItemMutation({ variables: {id: itemFromForm._id, dto: formData} });
             else
-                data = await api.createItem(formData);
+                response = await createItemMutation({ variables: { dto: formData } });
             
             setLists(oldLists => 
                 oldLists.map((list: ListObject) => {
@@ -295,13 +295,13 @@ const Home: React.FC = () => {
                         if(itemFromForm._id) {
                             const modifiedListItems = list.items.map((item: ItemObject) => {
                                 if(item._id === itemFromForm._id)
-                                    item = data.data.item;
+                                    item = response.data.updateItem.item;
                                 return item;
                             });
                             list = {...list, items: [...modifiedListItems]};
                         } else {
                             const lastItemIndex = list.items.length - 1;
-                            list.items[lastItemIndex] = data.data.item;
+                            list.items[lastItemIndex] = response.data.createItem.item;
                         }
                     }
                     return list;
@@ -311,7 +311,8 @@ const Home: React.FC = () => {
             const message = itemFromForm._id ? 'Item updated successfully' : 'Item created successfully';
             toast.success(message);
         } catch (err) {
-            toast.error(err.response.data.message);;
+            console.error(err);
+            // toast.error(err.response.data.message);;
         }
     }
 

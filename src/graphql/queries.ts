@@ -10,6 +10,7 @@ export const GET_LISTS = gql`
         items {
           _id,
           name,
+          done,
         }
       }
     }

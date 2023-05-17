@@ -8,42 +8,54 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
 import { AxiosResponse } from 'axios';
 import AddEmptyList from './lists/AddEmptyList';
-
+import { GET_LISTS } from '../graphql/queries';
+import { useQuery, useMutation } from '@apollo/client';
+import { CREATE_LIST, DELETE_LIST, UPDATE_LIST } from '../graphql/mutations';
+import { ListDto } from '../graphql/input.type';
 
 const Home: React.FC = () => {
     const [title, setTitle] = useState<string>('');
     const [lists, setLists] = useState<ListObject[]>([]);
     const [newItemName, setNewItemName] = useState<string>('');
+    const [createListMutation, {}] = useMutation(CREATE_LIST);
+    const [updateListMutation, {}] = useMutation(UPDATE_LIST);
+    const [deleteListMutation, {}] = useMutation(DELETE_LIST);
+    const { loading: loadingLists, error: listsError, data: listsData } = useQuery(GET_LISTS);
+
 
     useEffect(() => {
-        getAllLists();
-    }, []);
+        if(!loadingLists)
+            setLists(listsData.getLists.lists);
+
+        if(listsError)
+            toast.error(listsError.message);
+    }, [loadingLists]);
 
     async function handleOnSubmit(e: React.FormEvent<EventTarget>, listId: string | null = null) {
         e.preventDefault();
-        let formData = { title };
+        let formData: ListDto = { title };
         if (listId) {
             const listToUpdate = lists.find((list: ListObject) => list._id === listId);
             formData.title = listToUpdate && listToUpdate.title ? listToUpdate.title : '';
         }
 
         try {
-            let response: AxiosResponse<ListResponse>;
-            if (listId) {
-                response = await api.updateList(listId, formData);
-            } else {
-                response = await api.createList(formData);
-            }
+            let response: any;
+            if (listId)
+                response = await updateListMutation({ variables: { id: listId, dto: formData } });
+            else
+                response = await createListMutation({ variables: { dto: formData } });
 
             setLists(oldLists => {
                 if (listId) {
                     return oldLists.map((list: ListObject) => {
-                        if(list._id === listId)
-                            list = {...list, showTitleForm: false, ...response.data.list};
-                        return list;
-                    })
+                        let updatedList = { ...list };
+                        if(updatedList._id === listId)
+                            updatedList = { ...updatedList, showTitleForm: false, ...response.data.updateList.list };
+                        return updatedList;
+                    });
                 } else {
-                    oldLists[oldLists.length - 1] = response.data.list;
+                    oldLists[oldLists.length - 1] = { ...response.data.createList.list, showTitleForm: false };
                     return oldLists;
                 }
             });
@@ -55,14 +67,14 @@ const Home: React.FC = () => {
         }
     }
 
-    async function getAllLists() {
-        try {
-            const {data: {lists: fetchedLists}} = await api.getAllLists();
-            setLists(fetchedLists);
-        } catch (err) {
-            toast.error(err.response.data.message);
-        }
-    }
+    // async function getAllLists() {
+    //     try {
+    //         const {data: {lists: fetchedLists}} = await api.getAllLists();
+    //         setLists(fetchedLists);
+    //     } catch (err) {
+    //         toast.error(err.response.data.message);
+    //     }
+    // }
 
     async function deleteList(id: string | null = null) {
         if (!id) {
@@ -74,11 +86,12 @@ const Home: React.FC = () => {
             return;
 
         try {
-            const {data: successMessage} = await api.deleteList(id);
+            const { data: { deleteList: successMessage } } = await deleteListMutation({ variables: { id } });
             setLists(oldLists => oldLists.filter((list: ListObject) => list._id !== id));
             toast.success(successMessage);
         } catch (err) {
-            toast.error(err.response.data.message);;
+            console.error(err);
+            // toast.error(err);;
         }
     }
 
@@ -101,13 +114,14 @@ const Home: React.FC = () => {
         } 
 
         setLists(oldLists => oldLists.map(list => {
-            if (list._id === listId)
-                list.showTitleForm = shouldShow;
-            else if (checkIfObjEmpty(list)) 
+            let toggledList = { ...list };
+            if (list._id === listId) {
+                toggledList.showTitleForm = shouldShow;
+            } else if (checkIfObjEmpty(list)) 
                 deleteList();
             else 
-                list.showTitleForm = false;
-            return list;
+                toggledList.showTitleForm = false;
+            return toggledList;
         }));
     }
 

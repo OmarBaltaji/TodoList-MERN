@@ -1,18 +1,14 @@
 import { gql } from '@apollo/client';
+import { ListFragment } from './fragments';
 
 export const GET_LISTS = gql`
   query {
     getLists {
       count,
       lists {
-        _id,
-        title,
-        items {
-          _id,
-          name,
-          done,
-        }
+        ...ListFragment
       }
     }
   }
+  ${ListFragment}
 `;

@@ -64,8 +64,7 @@ const Home: React.FC = () => {
             const toastMessage = listId ? 'List updated successfully' : 'List created successfully';
             toast.success(toastMessage);
         } catch (err) {
-            console.error(err);
-            // toast.error(err.response.data.message);
+            toast.error(err?.graphQLErrors[0]?.message);
         }
     }
 
@@ -83,8 +82,7 @@ const Home: React.FC = () => {
             setLists(oldLists => oldLists.filter((list: ListObject) => list._id !== id));
             toast.success(successMessage);
         } catch (err) {
-            console.error(err);
-            // toast.error(err);;
+            toast.error(err?.graphQLErrors[0]?.message);
         }
     }
 
@@ -196,8 +194,7 @@ const Home: React.FC = () => {
             );
             toast.success('Item updated successfully');
         } catch (err) {
-            console.error(err);
-            // toast.error(err.response.data.message);;
+            toast.error(err?.graphQLErrors[0]?.message);
         }
     }
 
@@ -224,8 +221,7 @@ const Home: React.FC = () => {
                 );
                 toast.success(successMessage);
             } catch (err) {
-                console.error(err);
-                // toast.error(err.response.data.message);;
+                toast.error(err?.graphQLErrors[0]?.message);
             }
         }
     }
@@ -309,8 +305,7 @@ const Home: React.FC = () => {
             const message = itemFromForm._id ? 'Item updated successfully' : 'Item created successfully';
             toast.success(message);
         } catch (err) {
-            console.error(err);
-            // toast.error(err.response.data.message);;
+            toast.error(err?.graphQLErrors[0]?.message);
         }
     }
 

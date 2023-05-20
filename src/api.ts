@@ -9,14 +9,11 @@ export default {
   // Lists
   getAllLists: () => axios.get<AllListsResponse>(listApiUrl),
   createList: (formData: ListFormData) => axios.post<ListResponse>(listApiUrl, { ...formData }),
-  getList: (id: string) => axios.get<ListResponse>(`${listApiUrl}${id}`),
   deleteList: (id: string) => axios.delete<string>(`${listApiUrl}${id}`),
   updateList: (id: string, formData: ListFormData) => axios.patch<ListResponse>(`${listApiUrl}${id}`, { ...formData }),
 
   //Items
-  getListItems: (listId: string) => axios.post<AllItemsResponse>(itemApiUrl, { listId }),
   createItem: (formData: ItemFormData) => axios.post<ItemResponse>(`${itemApiUrl}add`, { ...formData }),
-  getItem: (id: string) => axios.get<ItemResponse>(`${itemApiUrl}${id}`),
   deleteItem: (id: string) => axios.delete<string>(`${itemApiUrl}${id}`),
   updateItem: (id: string, formData: ItemFormData) => axios.patch<ItemResponse>(`${itemApiUrl}${id}`, { ...formData }),
 }

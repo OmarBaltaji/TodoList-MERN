@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../graphql/mutations';
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,6 +13,14 @@ const Register: React.FC = () => {
   });
   const [registerMutation, {}] = useMutation(REGISTER);
   const history = useHistory();
+
+  
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn && parseInt(isLoggedIn)) {
+      history.push('/home');
+    }
+  }, []);
 
   const submitForm = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();

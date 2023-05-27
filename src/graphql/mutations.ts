@@ -17,6 +17,14 @@ export const REGISTER = gql`
   }
 `;
 
+export const LOGOUT = gql`
+  mutation {
+    logout {
+      result
+    }
+  }
+`;
+
 export const CREATE_LIST = gql`
   mutation CreateList ($dto: ListDto!) {
     createList (dto: $dto) {

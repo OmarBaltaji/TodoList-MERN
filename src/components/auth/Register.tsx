@@ -14,7 +14,7 @@ const Register: React.FC = () => {
   const [registerMutation, {}] = useMutation(REGISTER);
   const history = useHistory();
 
-  const submitForm = async (e) => {
+  const submitForm = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
 
     const areAllFilled = Object.values(registrationData).every(data => data !== '');
@@ -34,7 +34,7 @@ const Register: React.FC = () => {
     }
   }
 
-  const onChangeHandler = (e, property) => {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, property: string) => {
     setRegistrationData((oldData) => ({...oldData, [property]: e.target.value }));
   }
 

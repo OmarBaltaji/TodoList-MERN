@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const [loginMutation, {}] = useMutation(LOGIN);
   const history = useHistory();
 
-  const submitForm = async (e) => {
+  const submitForm = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
 
     const areAllFilled = Object.values(loginData).every(data => data !== '');
@@ -30,7 +30,7 @@ const Login: React.FC = () => {
     }
   }
 
-  const onChangeHandler = (e, property) => {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, property: string) => {
     setLoginData((oldData) => ({...oldData, [property]: e.target.value }));
   }
   

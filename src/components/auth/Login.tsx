@@ -5,16 +5,21 @@ import { toast } from 'react-toastify';
 import { LOGIN } from '../../graphql/mutations';
 import Header from '../common/Header';
 
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 const Login: React.FC = () => {
-  const [loginData, setLoginData] = useState({
+  const [loginData, setLoginData] = useState<LoginData>({
     email: '',
     password: ''
   });
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<LoginData>({
     email: '',
     password: '',
   });
-  const [disableSubmit, setDisableSubmit] = useState(true);
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [loginMutation, {}] = useMutation(LOGIN);
   const history = useHistory();
 
@@ -23,7 +28,7 @@ const Login: React.FC = () => {
     if(Object.values(loginData).every(input => input))
       setDisableSubmit(() => Object.values(formErrors).some(error => error !== ''));
 
-    const isLoggedIn = localStorage.getItem('isLoggedIn') ?? '0';
+    const isLoggedIn: string = localStorage.getItem('isLoggedIn') ?? '0';
     if (parseInt(isLoggedIn))
       history.push('/home');
   }, [formErrors]);

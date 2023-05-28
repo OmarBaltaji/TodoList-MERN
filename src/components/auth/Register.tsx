@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../graphql/mutations';
-import { ToastContainer, toast } from 'react-toastify';
-
+import { toast } from 'react-toastify';
+import Header from '../common/Header';
 
 const Register: React.FC = () => {
   const [registrationData, setRegistrationData] = useState({
@@ -48,11 +48,10 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <ToastContainer autoClose={3000} />
+      <Header />
       <div className='col-md-12 mt-5'>
       <div className='d-flex justify-content-center'>
-        <div>
-          <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
+        <div className='col-md-4'>
           <div className='card p-5 shadow-sm bg-body rounded row flex-column justify-content-center'>
             <form className='w-100'>
               <div className="row mb-4">
@@ -67,7 +66,7 @@ const Register: React.FC = () => {
                   <input type="text" className="form-control" id='email' value={registrationData.email} onChange={(e) => onChangeHandler(e, 'email')} />
                 </div>
               </div>
-              <div className="row mb-4">
+              <div className="row mb-5">
                 <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
                 <div className="col-sm-9">
                   <input type="password" className="form-control" id='password' value={registrationData.password} onChange={(e) => onChangeHandler(e, 'password')} />

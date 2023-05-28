@@ -4,12 +4,7 @@ import { ApolloCache, DefaultContext, MutationTuple, OperationVariables } from '
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { validatePassword, validateEmail, validateName } from '../../helpers/validations';
-
-interface AuthData {
-  email: string;
-  password: string;
-  fullName?: string;
-}
+import { AuthData } from '../../models';
 
 interface Props {
   page: string;

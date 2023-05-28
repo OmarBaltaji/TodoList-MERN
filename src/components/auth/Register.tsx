@@ -2,12 +2,7 @@ import React, { useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../graphql/mutations';
 import Form from './Form';
-
-interface AuthData {
-  fullName?: string;
-  email: string;
-  password: string;
-}
+import { AuthData } from '../../models';
 
 const Register: React.FC = () => {
   const [registrationData, setRegistrationData] = useState<AuthData>({

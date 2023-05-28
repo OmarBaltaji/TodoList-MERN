@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 
 const Header: React.FC = () => {
   const history = useHistory();
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') ?? '0');
+  const [isLoggedIn, setIsLoggedIn] = useState<string>(localStorage.getItem('isLoggedIn') ?? '0');
   const [logoutMutation, {}] = useMutation(LOGOUT);
 
   const logout = async () => {

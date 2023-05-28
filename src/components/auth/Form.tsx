@@ -40,6 +40,7 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
         const result: boolean = page === 'login' ? data.login.result : data.register.result;
 
         if(result) {
+          setDisableSubmit(true);
           if (page === 'login') {
             localStorage.setItem('isLoggedIn', '1');
             setAuthData(() => ({ email: '', password: '' }));
@@ -52,7 +53,6 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
               history.push('/');
             }, 2000);
           } 
-          setDisableSubmit(true);
         } else {
           toast.error("Something went wrong, please try again later");
         }

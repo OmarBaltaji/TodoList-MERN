@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../common/Header';
-import { ApolloCache, DefaultContext, MutationTuple, OperationVariables } from '@apollo/client';
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { validatePassword, validateEmail, validateName } from '../../helpers/validations';
 import { AuthData } from '../../models';
+import Input from './Input';
 
 interface Props {
   page: string;
@@ -21,13 +21,13 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
 
   useEffect(() => {
     // If all inputs are filled, check if one of the inputs contain an error. In case yes, then disable submit button
-    if(Object.values(authData).every(input => input))
+    if (Object.values(authData).every(input => input))
       setDisableSubmit(() => Object.values(formErrors).some(error => error !== ''));
 
     const isLoggedIn: string = localStorage.getItem('isLoggedIn') ?? '0';
     if (parseInt(isLoggedIn))
       history.push('/home');
-  }, [formErrors, history]);
+  }, [formErrors]);
 
   const submitForm = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
@@ -68,8 +68,12 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
     const value: string = e.target.value;
     setAuthData((oldData: AuthData) => ({...oldData, [property]: value }));
 
-    if (property === 'password' && value.length >= 8)
+    if (property === 'email' && formErrors.email)
+      validateEmail(value, setFormErrors);
+    else if (property === 'password' && formErrors.password)
       validatePassword(value, setFormErrors);
+    else if (property === 'fullName' && formErrors.fullName)
+      validateName(value, setFormErrors);
   }
 
   const onBlurHandler = (e: React.FocusEvent<HTMLInputElement>, property: string) => {
@@ -92,29 +96,14 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
               <form className='w-100'>
                {
                   page === 'register' && 
-                  <div className="row mb-4">
-                    <label htmlFor="fullName" className="col-sm-3 col-form-label">Full Name</label>
-                    <div className="col-sm-9">
-                      <input type="text" className="form-control" id='fullName' value={authData.fullName} onBlur={(e) => onBlurHandler(e, 'name')} onChange={(e) => onChangeHandler(e, 'fullName')} />
-                      {formErrors.fullName && <div className='text-danger mt-1'>{formErrors.fullName}</div>}
-                    </div>
-                  </div>
+                  <Input property='fullName' value={authData.fullName} onBlurHandler={onBlurHandler} onChangeHandler={onChangeHandler} error={formErrors.fullName} />
                 }
-                <div className="row mb-4">
-                  <label htmlFor="email" className="col-sm-3 col-form-label">Email</label>
-                  <div className="col-sm-9">
-                    <input type="email" className="form-control" id='email' value={authData.email} onBlur={(e) => onBlurHandler(e, 'email')} onChange={(e) => onChangeHandler(e, 'email')} />
-                    {formErrors.email && <div className='text-danger mt-1'>{formErrors.email}</div>}
-                  </div>
-                </div>
-                <div className="row mb-5">
-                  <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
-                  <div className="col-sm-9">
-                    <input type="password" className="form-control" id='password' value={authData.password} onBlur={(e) => onBlurHandler(e, 'password')} onChange={(e) => onChangeHandler(e, 'password')} />
-                    {formErrors.password && <div className='text-danger mt-1'>{formErrors.password}</div>}
-                  </div>
-                </div>
-                <div className='d-flex justify-content-between align-items-center'>
+
+                <Input property='email' value={authData.email} onBlurHandler={onBlurHandler} onChangeHandler={onChangeHandler} error={formErrors.email} />
+
+                <Input property='password' value={authData.password} onBlurHandler={onBlurHandler} onChangeHandler={onChangeHandler} error={formErrors.password} />
+             
+                <div className='d-flex justify-content-between align-items-center mt-5'>
                     {
                       page === 'login' 
                       ? 

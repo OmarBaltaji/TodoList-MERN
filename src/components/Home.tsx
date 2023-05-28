@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import React, {useState, useEffect} from 'react';
 import List from './lists/List';
-import { checkIfObjEmpty } from '../utilities';
+import { checkIfObjEmpty } from '../helpers/utilities';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject } from '../models';

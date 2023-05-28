@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import { checkIfObjEmpty } from '../../utilities';
+import { checkIfObjEmpty } from '../../helpers/utilities';
 import { ListObject } from '../../models';
 
 interface Props {

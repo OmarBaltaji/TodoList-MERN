@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkIfObjEmpty } from '../../utilities';
+import { checkIfObjEmpty } from '../../helpers/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { ListObject } from '../../models';

@@ -10,20 +10,23 @@ const Login: React.FC = () => {
     email: '',
     password: ''
   });
-  const [formValid, setFormValid] = useState({
-    email: false,
-    password: false,
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    password: '',
   });
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [loginMutation, {}] = useMutation(LOGIN);
   const history = useHistory();
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn && parseInt(isLoggedIn)) {
+    // If all inputs are filled, check if one of the inputs contain an error. In case yes, then disable submit button
+    if(Object.values(loginData).every(input => input))
+      setDisableSubmit(() => Object.values(formErrors).some(error => error !== ''));
+
+    const isLoggedIn = localStorage.getItem('isLoggedIn') ?? '0';
+    if (parseInt(isLoggedIn))
       history.push('/home');
-    }
-  }, []);
+  }, [formErrors]);
 
   const submitForm = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
@@ -47,35 +50,36 @@ const Login: React.FC = () => {
   }
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, property: string) => {
-    const value = e.target.value;
-    if(property === 'password') {
-      if(value.length > 6) {
-        setFormValid((oldData) => ({ ...oldData, password: true }));
-        setDisableSubmit(() => !Object.values(formValid).every(input => input));
-      } else {
-        setFormValid((oldData) => ({ ...oldData, password: false }));
-        setDisableSubmit(true);
-      }
-    }
-    setLoginData((oldData) => ({...oldData, [property]: e.target.value }));
+    const value: string = e.target.value;
+    setLoginData((oldData) => ({...oldData, [property]: value }));
+
+    if (property === 'password' && value.length > 6)
+      validatePassword(value);
+
   }
 
-  const onBlurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
-    validateEmail(e.target.value);
+  const onBlurHandler = (e: React.FocusEvent<HTMLInputElement>, property: string) => {
+    const value: string = e.target.value;
+    if (property === 'email')
+      validateEmail(value);
+    else 
+      validatePassword(value);
   }
 
   const validateEmail = (email: string) => {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    if (emailRegex.test(email)) {
-      setFormValid(oldData => ({ ...oldData, email: true }));
-      setDisableSubmit(() => !Object.values(formValid).every(input => input));
-      console.log(disableSubmit, !Object.values(formValid).every(input => input));
-    } else {
-      setFormValid(oldData => ({ ...oldData, email: false }));
-      setDisableSubmit(true);
-      toast.error('Email not valid');
-    }
+    const emailRegex: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (emailRegex.test(email))
+      setFormErrors(oldData => ({ ...oldData, email: '' }));
+    else
+      setFormErrors(oldData => ({ ...oldData, email: 'Email not valid' }));
   };
+
+  const validatePassword = (password: string) => {
+    if (password.length > 6)
+      setFormErrors((oldData) => ({ ...oldData, password: '' }));
+    else
+      setFormErrors((oldData) => ({ ...oldData, password: 'Password should not be empty and at least composed of 6 characters' }));
+  }
 
   return (
     <>
@@ -88,13 +92,15 @@ const Login: React.FC = () => {
                 <div className="row mb-4">
                   <label htmlFor="email" className="col-sm-3 col-form-label">Email</label>
                   <div className="col-sm-9">
-                    <input type="email" className="form-control" id='email' value={loginData.email} onBlur={onBlurHandler} onChange={(e) => onChangeHandler(e, 'email')} />
+                    <input type="email" className="form-control" id='email' value={loginData.email} onBlur={(e) => onBlurHandler(e, 'email')} onChange={(e) => onChangeHandler(e, 'email')} />
+                    {formErrors.email && <div className='text-danger mt-1'>{formErrors.email}</div>}
                   </div>
                 </div>
                 <div className="row mb-5">
                   <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
                   <div className="col-sm-9">
-                    <input type="password" className="form-control" id='password' value={loginData.password} onChange={(e) => onChangeHandler(e, 'password')} />
+                    <input type="password" className="form-control" id='password' value={loginData.password} onBlur={(e) => onBlurHandler(e, 'password')} onChange={(e) => onChangeHandler(e, 'password')} />
+                    {formErrors.password && <div className='text-danger mt-1'>{formErrors.password}</div>}
                   </div>
                 </div>
                 <div className='d-flex justify-content-between align-items-center'>

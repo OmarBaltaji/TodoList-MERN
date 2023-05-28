@@ -1,15 +1,16 @@
 /* eslint-disable no-restricted-globals */
 import React, {useState, useEffect} from 'react';
 import List from './lists/List';
-import { checkIfObjEmpty } from '../utilities';
-import { ToastContainer, toast } from 'react-toastify';
+import { checkIfObjEmpty } from '../helpers/utilities';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ListObject, ItemObject, ListResponse, ItemResponse } from '../models';
+import { ListObject, ItemObject } from '../models';
 import AddEmptyList from './lists/AddEmptyList';
 import { GET_LISTS } from '../graphql/queries';
 import { useQuery, useMutation, FetchResult } from '@apollo/client';
 import { CREATE_LIST, DELETE_LIST, UPDATE_LIST, CREATE_ITEM, UPDATE_ITEM, DELETE_ITEM } from '../graphql/mutations';
 import { CreateItemDto, ListDto, EditItemDto } from '../graphql/input.type';
+import Header from './common/Header';
 
 const Home: React.FC = () => {
     const [title, setTitle] = useState<string>('');
@@ -340,7 +341,7 @@ const Home: React.FC = () => {
 
     return (
         <>
-            <ToastContainer autoClose={3000} />
+            <Header />
             <div className="mt-4 d-flex align-items-center flex-column">
                 <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
                 {displayAllLists()}

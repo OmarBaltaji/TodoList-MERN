@@ -1,6 +1,30 @@
 import { gql } from "@apollo/client";
 import { ItemFragment, ListFragment } from "./fragments";
 
+export const LOGIN = gql`
+  mutation Login ($dto: LoginAuthDto!) {
+    login(dto: $dto) {
+      result
+    }
+  }
+`;
+
+export const REGISTER = gql`
+  mutation Register ($dto: RegisterAuthDto!) {
+    register (dto: $dto) {
+      result
+    }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation {
+    logout {
+      result
+    }
+  }
+`;
+
 export const CREATE_LIST = gql`
   mutation CreateList ($dto: ListDto!) {
     createList (dto: $dto) {

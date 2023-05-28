@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkIfObjEmpty } from '../../utilities';
+import { checkIfObjEmpty } from '../../helpers/utilities';
 import Form from '../common/Form';
 import { ItemObject } from '../../models';
 import ExistingItem from './ExistingItem';

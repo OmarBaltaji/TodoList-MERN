@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import List from './lists/List';
 import { checkIfObjEmpty } from '../utilities';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ListObject, ItemObject } from '../models';
 import AddEmptyList from './lists/AddEmptyList';
@@ -342,7 +342,6 @@ const Home: React.FC = () => {
     return (
         <>
             <Header />
-            <ToastContainer autoClose={3000} />
             <div className="mt-4 d-flex align-items-center flex-column">
                 <h1 className="text-center mb-5">Welcome to your TodoList!</h1>
                 {displayAllLists()}

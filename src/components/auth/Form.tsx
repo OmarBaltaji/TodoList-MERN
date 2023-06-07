@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { validatePassword, validateEmail, validateName } from '../../helpers/validations';
 import { AuthData } from '../../models';
 import Input from './Input';
+import Cookies from 'js-cookie';
 
 interface Props {
   page: string;
@@ -31,12 +32,13 @@ const Form: React.FC<Props> = ({ page, authData, setAuthData, formErrors, setFor
     if(!doErrorsExist) {
       try {
         const { data } = await authMutation({ variables: { dto: authData } });
-        const result: boolean = page === 'login' ? data.login.result : data.register.result;
+        const result: boolean | string = page === 'login' ? data.login.access_token : data.register.result;
 
         if(result) {
-          if (page === 'login') {
+          if (page === 'login' && typeof result === 'string') {
             localStorage.setItem('isLoggedIn', '1');
             setAuthData(() => ({ email: '', password: '' }));
+            Cookies.set('access_token', result);
             history.push('/home');
           } else {
             toast.success('Registration Successful');

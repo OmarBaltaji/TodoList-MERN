@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import { LOGOUT } from '../../graphql/mutations';
 import { ToastContainer } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const Header: React.FC = () => {
   const history = useHistory();
@@ -14,6 +15,7 @@ const Header: React.FC = () => {
     if(result) {
       setIsLoggedIn('0');
       localStorage.removeItem('isLoggedIn');
+      Cookies.remove('access_token');
       history.push('/');
     }
   }

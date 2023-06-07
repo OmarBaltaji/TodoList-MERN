@@ -4,7 +4,7 @@ import { ItemFragment, ListFragment } from "./fragments";
 export const LOGIN = gql`
   mutation Login ($dto: LoginAuthDto!) {
     login(dto: $dto) {
-      result
+      access_token
     }
   }
 `;
